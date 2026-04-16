@@ -9,8 +9,22 @@ body {
     line-height: 1.6;
     transition:
     background-color 0.3s ease,
-    color 0.3s ease; /* Transição suave */
+    color 0.3s ease;
 }
+
+/* ── Navbar ──────────────────────────────────────────────────────────────── */
+
+.status-badge {
+    background-color: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    font-size: 0.95rem;
+}
+
+/* ── Game cards (home) ───────────────────────────────────────────────────── */
 
 .game-card {
     border-radius: 25px;
@@ -33,14 +47,50 @@ body {
     padding: 10px 30px;
 }
 
-.status-badge {
-    background-color: var(
-    --bs-body-bg
-    ); /* Usa a cor de fundo nativa do tema atual */
-    border: 1px solid var(--bs-border-color);
+/* ── Worksheet cards ─────────────────────────────────────────────────────── */
+
+.worksheet-card {
     border-radius: 20px;
-    padding: 8px 15px;
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 2px solid var(--bs-border-color);
+    transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.worksheet-card:not(.worksheet-locked):hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+}
+
+.worksheet-locked {
+    opacity: 0.6;
+    filter: grayscale(40%);
+}
+
+.worksheet-completed {
+    border-color: var(--bs-success);
+}
+
+.worksheet-icon {
+    line-height: 1;
+}
+
+/* ── Exercise option buttons ─────────────────────────────────────────────── */
+
+.btn-option {
+    border-radius: 12px;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    font-size: 1.1rem;
+}
+
+/* ── Auth modal ──────────────────────────────────────────────────────────── */
+
+#authModal .nav-tabs .nav-link {
+    border-radius: 0;
+}
+
+#authModal .nav-tabs .nav-link.active {
+    font-weight: 600;
 }
 
