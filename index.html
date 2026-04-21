@@ -1,70 +1,333 @@
 <!doctype html>
-<html lang="pt-PT" data-bs-theme="light">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lexis - Aprendizagem das palavras</title>
-    <script defer type="module" src="./src/navbar.js"></script>
-    <script defer type="module" src="./src/main.js"></script>
-    <link rel="stylesheet" href="./src/style.css" />
+    <title>Lexis - Welcome</title>
+    <!-- Bootstrap CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <style>
+      :root {
+        --duo-green: #58cc02;
+        --duo-green-shadow: #58a700;
+        --duo-blue: #1cb0f6;
+        --duo-blue-shadow: #1899d6;
+        --duo-text: #4b4b4b;
+        --duo-muted: #777;
+        --duo-border: #e5e5e5;
+        --duo-offwhite: #f7f7f7;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Comic Sans MS", "Arial", sans-serif;
+        color: var(--duo-text);
+        overflow-x: hidden;
+      }
+
+      /* ── Navbar ────────────────────────────────────────────── */
+      .lexis-navbar {
+        background: #fff;
+        border-bottom: 2px solid var(--duo-border);
+      }
+
+      .lexis-navbar .navbar-brand {
+        font-size: 1.6rem;
+        font-weight: 900;
+        color: var(--duo-green);
+        letter-spacing: 1px;
+      }
+
+      /* ── Duolingo-style buttons ────────────────────────────── */
+      .btn-duo-primary {
+        background-color: var(--duo-green);
+        border: none;
+        border-bottom: 4px solid var(--duo-green-shadow);
+        border-radius: 14px;
+        color: #fff;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px 28px;
+        transition: filter 0.15s, transform 0.1s, border-bottom-width 0.1s;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-duo-primary:hover {
+        filter: brightness(1.08);
+        color: #fff;
+      }
+
+      .btn-duo-primary:active {
+        border-bottom-width: 2px;
+        transform: translateY(2px);
+        color: #fff;
+      }
+
+      .btn-duo-secondary {
+        background-color: #fff;
+        border: 2px solid var(--duo-border);
+        border-bottom: 4px solid var(--duo-border);
+        border-radius: 14px;
+        color: var(--duo-blue);
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px 28px;
+        transition: background-color 0.15s, transform 0.1s,
+          border-bottom-width 0.1s;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-duo-secondary:hover {
+        background-color: #f0f0f0;
+        color: var(--duo-blue);
+      }
+
+      .btn-duo-secondary:active {
+        border-bottom-width: 2px;
+        transform: translateY(2px);
+      }
+
+      /* ── Hero section ──────────────────────────────────────── */
+      .hero-section {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding-top: 76px;
+        background: linear-gradient(
+          160deg,
+          #fff 60%,
+          rgba(88, 204, 2, 0.07) 100%
+        );
+      }
+
+      .hero-illustration {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .hero-illustration .globe-emoji {
+        font-size: 9rem;
+        filter: drop-shadow(0 8px 24px rgba(88, 204, 2, 0.25));
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-14px);
+        }
+      }
+
+      .hero-badge {
+        position: absolute;
+        background: var(--duo-green);
+        color: #fff;
+        border-radius: 50px;
+        padding: 6px 14px;
+        font-size: 0.8rem;
+        font-weight: 800;
+        box-shadow: 0 4px 0 var(--duo-green-shadow);
+      }
+
+      .hero-badge.badge-top {
+        top: 10px;
+        right: 10px;
+      }
+
+      .hero-badge.badge-bottom {
+        bottom: 20px;
+        left: 10px;
+        background: var(--duo-blue);
+        box-shadow: 0 4px 0 var(--duo-blue-shadow);
+      }
+
+      .hero-text h1 {
+        font-size: 3rem;
+        font-weight: 900;
+        line-height: 1.15;
+        color: var(--duo-text);
+      }
+
+      .hero-text p {
+        font-size: 1.15rem;
+        color: var(--duo-muted);
+      }
+
+      /* ── Signup section ────────────────────────────────────── */
+      .signup-section {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        background-color: var(--duo-offwhite);
+        padding: 80px 0;
+      }
+
+      .signup-card {
+        background: #fff;
+        border: 2px solid var(--duo-border);
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+      }
+
+      .signup-card h2 {
+        font-size: 1.9rem;
+        font-weight: 900;
+        color: var(--duo-text);
+      }
+
+      .form-control-duo {
+        border: 2px solid var(--duo-border);
+        border-radius: 12px;
+        padding: 13px 16px;
+        font-size: 1rem;
+        background-color: var(--duo-offwhite);
+        transition: border-color 0.2s, background-color 0.2s;
+      }
+
+      .form-control-duo:focus {
+        border-color: #84d8ff;
+        background-color: #fff;
+        box-shadow: none;
+      }
+
+      .form-control-duo::placeholder {
+        color: #aaa;
+      }
+    </style>
   </head>
   <body>
-    <div class="container mt-5">
-      <div class="row mb-5">
-        <div class="col-12 text-center">
-          <h1 class="fw-bold text-body mb-3" id="text-welcome">
-            Bem vindo! 👋
-          </h1>
-          <p class="fs-5 text-body-secondary">
-            Estás no <strong>Nível </strong> <strong id="level">4</strong>.
-          </p>
+    <!-- ── Navbar ─────────────────────────────────────────────── -->
+    <nav class="navbar navbar-expand-lg lexis-navbar shadow-sm py-3 fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <i class="fa-solid fa-puzzle-piece text-warning me-1"></i> Lexis
+        </a>
+        <div class="d-flex gap-2 ms-auto">
+          <a href="#signup" class="btn btn-duo-secondary py-2 px-3">Sign Up</a>
+          <a href="dashboard.html" class="btn btn-duo-primary py-2 px-3">
+            Log In
+          </a>
         </div>
       </div>
-      <div class="row g-4 justify-content-center">
-        <div class="col-md-5">
-          <div
-            class="card game-card h-100 bg-body-tertiary text-center p-4 border-bottom border-info border-5"
-          >
-            <div class="card-body">
-              <div class="display-1 text-info mb-3">
-                <i class="fa-solid fa-map"></i>
-              </div>
-              <h2 class="card-title fw-bold text-body">Modo Normal</h2>
-              <p class="card-text fs-5 text-body-secondary">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-              </p>
-              <button
-                id="btn-normal"
-                class="btn btn-info text-white btn-play mt-3 w-100 shadow-sm"
-              >
-                <i class="fa-solid fa-play"></i> Jogar Normal
-              </button>
+    </nav>
+
+    <!-- ── Hero section ──────────────────────────────────────── -->
+    <section class="hero-section" id="welcome">
+      <div class="container">
+        <div class="row align-items-center g-5">
+          <!-- Illustration -->
+          <div class="col-md-6 text-center">
+            <div class="hero-illustration">
+              <span class="globe-emoji">🌍</span>
+              <span class="hero-badge badge-top">
+                <i class="fa-solid fa-bolt me-1"></i>New words daily
+              </span>
+              <span class="hero-badge badge-bottom">
+                <i class="fa-solid fa-star me-1"></i>Earn XP
+              </span>
             </div>
           </div>
-        </div>
-        <div class="col-md-5">
-          <div
-            class="card game-card h-100 bg-body-tertiary text-center p-4 border-bottom border-warning border-5"
-          >
-            <div class="card-body">
-              <div class="display-1 text-warning mb-3">
-                <i class="fa-solid fa-fire"></i>
-              </div>
-              <h2 class="card-title fw-bold text-body">Modo Hardcore</h2>
-              <p class="card-text fs-5 text-body-secondary">
-                It is a long established fact that a reader will be distracted
-                by the readable content of a page when looking at its layout.
-              </p>
-              <button
-                id="btn-hardcore"
-                class="btn btn-warning text-dark btn-play mt-3 w-100 shadow-sm"
-              >
-                <i class="fa-solid fa-bolt"></i> Iniciar Desafio
-              </button>
-            </div>
+
+          <!-- Welcome text -->
+          <div class="col-md-6 hero-text">
+            <h1>
+              Welcome to<br />
+              <span style="color: var(--duo-green)">Lexis</span>
+            </h1>
+            <p class="mt-3 mb-4">
+              The free, fun, and effective way to learn new words every day.
+            </p>
+            <a href="#signup" class="btn btn-duo-primary btn-lg">
+              <i class="fa-solid fa-play me-2"></i>Get Started
+            </a>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- ── Create Account section ───────────────────────────── -->
+    <section class="signup-section" id="signup">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-8 col-lg-5">
+            <div class="signup-card">
+              <h2 class="text-center mb-4">Create Account</h2>
+              <form>
+                <div class="mb-3">
+                  <input
+                    type="number"
+                    class="form-control form-control-duo"
+                    placeholder="Age"
+                    min="13"
+                    max="120"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <input
+                    type="text"
+                    class="form-control form-control-duo"
+                    placeholder="Name (optional)"
+                  />
+                </div>
+                <div class="mb-3">
+                  <input
+                    type="email"
+                    class="form-control form-control-duo"
+                    placeholder="Email"
+                    required
+                  />
+                </div>
+                <div class="mb-4">
+                  <input
+                    type="password"
+                    class="form-control form-control-duo"
+                    placeholder="Password"
+                    required
+                  />
+                </div>
+                <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                  <button type="button" class="btn btn-duo-secondary">
+                    <i class="fa-solid fa-right-to-bracket me-1"></i> Login
+                  </button>
+                  <a href="dashboard.html" class="btn btn-duo-primary">
+                    <i class="fa-solid fa-arrow-right me-1"></i> Proceed without
+                    account
+                  </a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
