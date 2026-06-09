@@ -23,7 +23,6 @@ export class PdfView {
             <div class="lexis-pdf-content">${pdf.text}</div>
           </div>
         </div>`;
-
       mc.querySelector("#clear-pdf").addEventListener("click", async () => {
         await this.pdfModel.clearPdf();
         this._renderContent();
@@ -34,7 +33,7 @@ export class PdfView {
     mc.innerHTML = `
       <div class="d-flex flex-column align-items-center justify-content-center w-100 lexis-min-h-full">
         <div class="rounded-4 shadow-sm px-4 py-3 text-center mb-4 w-100 lexis-prompt-bar lexis-contained">
-          Read PDFs with a dedicated typography!
+          Read PDF files to earn coins!
         </div>
         <input type="file" id="pdf-input" accept="application/pdf" class="d-none" />
         <button id="upload-btn" class="btn text-white rounded-4 px-5 py-2 lexis-btn-upload">Click here to upload your file</button>

@@ -10,7 +10,7 @@ export class SettingsView {
 
   async render() {
     if (window.setActiveTab) window.setActiveTab("settings");
-    const user = (await this.sessionModel.getSession()) || {};
+    const user = await this.sessionModel.getSession() || {};
     const currentTheme = user.theme || "light";
     const adaptText = user.adaptText || false;
     const soundMuted = isMuted();
@@ -58,19 +58,12 @@ export class SettingsView {
             </div>
             <div class="mb-4">
               <label for="settings-password" class="form-label">Password</label>
-              <div class="position-relative">
-                <input type="password" id="settings-password" class="form-control rounded-4 py-2 pe-5"
-                  value="${user.password || ""}" required />
-                <button type="button" class="btn p-0 position-absolute end-0 top-50 translate-middle-y me-3 border-0 bg-transparent" style="z-index:5;line-height:1;font-size:1.2rem;" onclick="togglePasswordVisibility('settings-password',this)"><i class="bi bi-eye"></i></button>
-              </div>
+              <input type="password" id="settings-password" class="form-control rounded-4 py-2"
+                value="${user.password || ""}" required />
             </div>
             <p id="settings-error" class="alert alert-danger py-2" style="display: none;"></p>
             <button type="submit" class="btn text-white w-100 rounded-4 py-2 lexis-btn-primary">Apply Changes</button>
           </form>
-
-          <button id="settings-logout-btn" class="btn text-white w-100 rounded-4 py-2 lexis-btn-primary mt-4">
-            Logout
-          </button>
         </div>
       </div>`;
 
@@ -96,47 +89,33 @@ export class SettingsView {
       document.documentElement.setAttribute("data-bs-theme", theme);
     });
 
-    mainContainer
-      .querySelector("#settings-form")
-      .addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const newName = mainContainer
-          .querySelector("#settings-username")
-          .value.trim();
-        const newEmail = mainContainer
-          .querySelector("#settings-email")
-          .value.trim();
-        const newPassword =
-          mainContainer.querySelector("#settings-password").value;
+    mainContainer.querySelector("#settings-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const newName = mainContainer.querySelector("#settings-username").value.trim();
+      const newEmail = mainContainer.querySelector("#settings-email").value.trim();
+      const newPassword = mainContainer.querySelector("#settings-password").value;
 
-        if (!newName || !newEmail || !newPassword) {
-          const err = mainContainer.querySelector("#settings-error");
-          err.textContent = "Fill in all fields.";
-          err.style.display = "block";
-          return;
-        }
-
-        user.name = newName;
-        user.email = newEmail;
-        user.password = newPassword;
-        await this.sessionModel.updateUser(user);
-        mainContainer.dispatchEvent(new CustomEvent("avatar:updated"));
-
+      if (!newName || !newEmail || !newPassword) {
         const err = mainContainer.querySelector("#settings-error");
-        err.className = "alert alert-success py-2";
-        err.textContent = "Changes applied successfully.";
+        err.textContent = "Fill in all fields.";
         err.style.display = "block";
-        setTimeout(() => {
-          err.style.display = "none";
-          err.className = "alert alert-danger py-2";
-        }, 2000);
-      });
+        return;
+      }
 
-    mainContainer
-      .querySelector("#settings-logout-btn")
-      .addEventListener("click", async () => {
-        await this.sessionModel.logout();
-        window.location.href = import.meta.env.BASE_URL + "index.html";
-      });
+      user.name = newName;
+      user.email = newEmail;
+      user.password = newPassword;
+      await this.sessionModel.updateUser(user);
+      mainContainer.dispatchEvent(new CustomEvent("avatar:updated"));
+
+      const err = mainContainer.querySelector("#settings-error");
+      err.className = "alert alert-success py-2";
+      err.textContent = "Changes applied successfully.";
+      err.style.display = "block";
+      setTimeout(() => {
+        err.style.display = "none";
+        err.className = "alert alert-danger py-2";
+      }, 2000);
+    });
   }
 }

@@ -4,7 +4,6 @@ import { ensureAudioContext, playLevelUp } from "./sound.js";
 import { createAvatar } from "@dicebear/core";
 import { bigSmile } from "@dicebear/collection";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap";
 import { LevelsView } from "./views/levels_view.js";
 import { PdfView } from "./views/pdf_view.js";
@@ -13,33 +12,7 @@ import { SettingsView } from "./views/settings_view.js";
 import { AdminView } from "./views/admin_view.js";
 import { onThemeChange, assetUrl } from "./theme.js";
 
-window.togglePasswordVisibility = (inputId, btn) => {
-  const input = document.getElementById(inputId);
-  if (!input) return;
-  const isHidden = input.type === "password";
-  input.type = isHidden ? "text" : "password";
-  const icon = btn.querySelector("i");
-  if (icon) {
-    icon.className = isHidden ? "bi bi-eye-slash" : "bi bi-eye";
-  }
-};
-
 const sessionModel = new SessionModel();
-sessionModel.initSession();
-const session = sessionModel.getSession();
-
-const savedTheme = (session && session.theme) || "light";
-document.documentElement.setAttribute("data-bs-theme", savedTheme);
-
-function updateLogo() {
-  const logo = document.querySelector("#sidebar-logo");
-  if (!logo) return;
-  logo.src = document.documentElement.getAttribute("data-bs-theme") === "dark"
-    ? assetUrl("assets/img/LogoOrange.png")
-    : assetUrl("assets/img/LogoBlue.png");
-}
-updateLogo();
-onThemeChange(updateLogo);
 
 const DEFAULT_AVATAR_OPTIONS = {
   eyes: ["cheery"],
@@ -85,8 +58,8 @@ function setBar(id, pct) {
   if (el) el.style.width = `${pct}%`;
 }
 
-function refreshSidebar() {
-  const user = sessionModel.getSession();
+async function refreshSidebar() {
+  const user = await sessionModel.getSession();
   if (!user) return;
 
   const avatarSrc = createAvatar(bigSmile, getAvatarOptions(user)).toDataUri();
@@ -105,11 +78,11 @@ function refreshSidebar() {
   setText("#user-xp-mobile", user.xp);
   setText("#user-coins-mobile", user.coins);
 
-  const xpPct = Math.min(Math.round((user.xp % 200) / 200 * 100), 100);
+const xpPct = Math.min(Math.round(((user.xp % 200) / 200) * 100), 100);
   setBar("#daily-xp-bar", xpPct);
   setText("#daily-xp-text", `${xpPct}%`);
 
-  const coinPct = Math.min(Math.round(user.coins / 100 * 100), 100);
+  const coinPct = Math.min(Math.round((user.coins / 100) * 100), 100);
   setBar("#daily-coins-bar", coinPct);
   setText("#daily-coins-text", `${coinPct}%`);
 
@@ -118,13 +91,34 @@ function refreshSidebar() {
   setText("#streak-count", user.streak);
   setText("#streak-best", user.longestStreak);
 
-  document.querySelectorAll("[data-tab='store'], [data-tab='customization'], [data-tab='pdf']").forEach(btn => {
-    btn.classList.toggle("d-none", user.isAnonymous);
-  });
-  document.querySelectorAll(".restricted-admin-tab").forEach(btn => {
+document
+    .querySelectorAll(
+      "[data-tab='store'], [data-tab='customization'], [data-tab='pdf']",
+    )
+    .forEach((btn) => {
+      btn.classList.toggle("d-none", user.isAnonymous);
+    });
+  document.querySelectorAll(".restricted-admin-tab").forEach((btn) => {
     btn.classList.toggle("d-none", !user.isAdmin);
   });
 }
+
+(async () => {
+  const session = await sessionModel.getSession();
+
+  const savedTheme = (session && session.theme) || "light";
+  document.documentElement.setAttribute("data-bs-theme", savedTheme);
+
+  function updateLogo() {
+    const logo = document.querySelector("#sidebar-logo");
+    if (!logo) return;
+    logo.src =
+      document.documentElement.getAttribute("data-bs-theme") === "dark"
+        ? assetUrl("assets/img/LogoOrange.png")
+        : assetUrl("assets/img/LogoBlue.png");
+  }
+  updateLogo();
+  onThemeChange(updateLogo);
 
 if (session?.adaptText) {
   document.body.classList.add("dyslexic-mode");
@@ -141,7 +135,7 @@ window.setActiveTab = (tab) => {
   }
 };
 
-refreshSidebar();
+  await refreshSidebar();
 
 const mainContainer = document.querySelector("#main-container");
 window.mainContainer = mainContainer;
@@ -151,7 +145,7 @@ const pdfView = new PdfView(sessionModel);
 const shopView = new ShopView(sessionModel);
 const settingsView = new SettingsView(sessionModel);
 const adminView = new AdminView(sessionModel);
-levelsView.render();
+await levelsView.render();
 
 const logo = document.querySelector("#sidebar-logo");
 if (logo) {
@@ -171,8 +165,8 @@ if (homeBtn) {
 
 const logoutBtn = document.querySelector("#btn-logout");
 if (logoutBtn) {
-  logoutBtn.addEventListener("click", () => {
-    sessionModel.logout();
+  logoutBtn.addEventListener("click", async () => {
+      await sessionModel.logout();
     window.location.href = import.meta.env.BASE_URL + "index.html";
   });
 }
@@ -202,14 +196,7 @@ document.body.addEventListener("level:up", (e) => {
   playLevelUp();
 });
 
-document.addEventListener("click", () => ensureAudioContext(), { once: true });
-
-document.body.addEventListener("user:updated", () => {
-  refreshSidebar();
-});
-
-window.addEventListener("storage", (e) => {
-  if (e.key === "lexis_session" || e.key === "lexis_users") {
-    refreshSidebar();
-  }
-});
+document.addEventListener("click", () => ensureAudioContext(), {
+    once: true,
+  });
+})();

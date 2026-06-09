@@ -3,29 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "description": "learning app for readers with dyslexia, with interactive exercises",
-  "keywords": [
-    "dyslexia",
-    "spelling",
-    "education",
-    "gamification"
-  ],
-  "homepage": "https://github.com/mrjshzk/lexis#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mrjshzk/lexis.git"
-  },
-  "bugs": {
-    "url": "https://github.com/mrjshzk/lexis/issues"
-  },
-  "browserslist": [
-    "> 0.5%",
-    "last 2 versions",
-    "not dead"
-  ],
   "scripts": {
     "dev": "vite",
-    "api": "json-server -p 3002 --watch db.json",
+    "api": "json-server --watch db.json",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -36,7 +16,6 @@
     "@dicebear/collection": "^9.4.2",
     "@dicebear/core": "^9.4.2",
     "bootstrap": "^5.3.8",
-    "bootstrap-icons": "^1.13.1",
     "canvas-confetti": "^1.9.4",
     "dicebear": "^9.4.2",
     "json-server": "^1.0.0-beta.15",

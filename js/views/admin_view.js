@@ -1,7 +1,7 @@
 export class AdminView {
   constructor(sessionModel) {
     this.sessionModel = sessionModel;
-    document.querySelectorAll('[data-tab="admin"]').forEach((btn) => {
+    document.querySelectorAll('[data-tab="admin"]').forEach(btn => {
       btn.onclick = () => this.render();
     });
   }
@@ -9,7 +9,7 @@ export class AdminView {
   async render() {
     if (window.setActiveTab) window.setActiveTab("admin");
     const allUsers = await this.sessionModel.getAllUsers();
-    const users = allUsers.filter((u) => !u.isAnonymous);
+    const users = allUsers.filter(u => !u.isAnonymous);
     const mc = document.querySelector("#main-container");
 
     mc.innerHTML = `
@@ -33,9 +33,7 @@ export class AdminView {
               </tr>
             </thead>
             <tbody>
-              ${users
-                .map(
-                  (u) => `<tr>
+              ${users.map(u => `<tr>
                 <td>${u.name}</td>
                 <td>${u.level}</td>
                 <td>${u.currentTitle}</td>
@@ -45,18 +43,15 @@ export class AdminView {
                 <td>${u.solvedSheets?.length ?? 0}</td>
                 <td>${u.hardcoreBest ?? 0}</td>
                 <td><button class="btn btn-sm btn-outline-danger rounded-pill px-2 py-0 admin-delete-btn" data-user="${u.id}" data-name="${u.name}">✕</button></td>
-              </tr>`,
-                )
-                .join("")}
+              </tr>`).join("")}
             </tbody>
           </table>
-          ${users.length === 0 ? '<p class="text-center text-secondary py-3">No registered users yet.</p>' : ""}
+          ${users.length === 0 ? '<p class="text-center text-secondary py-3">No registered users yet.</p>' : ''}
         </div>
       </div>`;
 
-    mc.querySelectorAll(".admin-editable").forEach((span) => {
+    mc.querySelectorAll(".admin-editable").forEach(span => {
       span.addEventListener("click", () => {
-        // não duplicar o input
         if (span.querySelector("input")) return;
         const val = span.textContent;
         span.innerHTML = `<input type="number" class="form-control form-control-sm d-inline-block" style="width:5rem" value="${val}" />`;
@@ -66,26 +61,18 @@ export class AdminView {
         const save = async () => {
           const newVal = parseInt(input.value);
           if (!isNaN(newVal)) {
-            await this.sessionModel.updateUserStat(
-              span.dataset.user,
-              span.dataset.field,
-              newVal,
-            );
+            await this.sessionModel.updateUserStat(span.dataset.user, span.dataset.field, newVal);
             span.textContent = newVal;
           } else {
             span.textContent = val;
           }
         };
         input.addEventListener("blur", save);
-        input.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            input.blur();
-          }
-        });
+        input.addEventListener("keydown", (e) => { if (e.key === "Enter") { input.blur(); } });
       });
     });
 
-    mc.querySelectorAll(".admin-delete-btn").forEach((btn) => {
+    mc.querySelectorAll(".admin-delete-btn").forEach(btn => {
       btn.addEventListener("click", async () => {
         if (confirm(`Delete user "${btn.dataset.name}"?`)) {
           await this.sessionModel.deleteUser(btn.dataset.user);
