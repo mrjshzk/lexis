@@ -22,9 +22,10 @@ export class LoginView {
     document.getElementById("return-btn").onclick = () => { main.innerHTML = this.#savedHtml; main.dispatchEvent(new CustomEvent("index:render")); };
     document.getElementById("login-form").onsubmit = (e) => {
       e.preventDefault();
-      const r = this.#sessionModel.login(document.getElementById("login-identifier").value, document.getElementById("login-password").value);
-      if (!r.ok) { const err = document.getElementById("login-error"); err.textContent = r.error; err.style.display = "block"; }
-      else window.location.href = import.meta.env.BASE_URL + "html/dashboard.html";
+      this.#sessionModel.login(document.getElementById("login-identifier").value, document.getElementById("login-password").value).then((r) => {
+        if (!r.ok) { const err = document.getElementById("login-error"); err.textContent = r.error; err.style.display = "block"; }
+        else window.location.href = import.meta.env.BASE_URL + "html/dashboard.html";
+      });
     };
   };
 

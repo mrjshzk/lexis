@@ -1,0 +1,102 @@
+{
+  "users": [
+    {
+      "id": "admin",
+      "name": "admin",
+      "email": null,
+      "password": "lexis123",
+      "isAnonymous": false,
+      "xp": 99999,
+      "coins": 99999,
+      "level": 500,
+      "currentTitle": "Legend",
+      "streak": 0,
+      "longestStreak": 0,
+      "lastActiveDate": null,
+      "avatar": {},
+      "purchasedStoreItems": [],
+      "solvedSheets": [],
+      "theme": "light",
+      "hardcoreBest": 0,
+      "isAdmin": true,
+      "adaptText": false,
+      "soundMuted": false
+    },
+    {
+      "id": "cNg80UK3Cds",
+      "name": "miguel",
+      "email": "miguel@miguel",
+      "password": "miguel",
+      "isAnonymous": false,
+      "xp": 40,
+      "coins": 0,
+      "solvedSheets": [
+        "worksheet-1781024714765"
+      ],
+      "streak": 1,
+      "longestStreak": 0,
+      "lastActiveDate": "2026-06-09",
+      "avatar": {},
+      "purchasedStoreItems": [],
+      "currentTitle": "Explorer",
+      "level": 1,
+      "theme": "light",
+      "soundMuted": false,
+      "adaptText": false,
+      "hardcoreBest": 0,
+      "isAdmin": false
+    },
+    {
+      "id": "0SkS4vaQgA4",
+      "name": "Guest",
+      "email": null,
+      "password": null,
+      "isAnonymous": true,
+      "xp": 0,
+      "coins": 0,
+      "solvedSheets": [],
+      "streak": 0,
+      "longestStreak": 0,
+      "lastActiveDate": null,
+      "avatar": {},
+      "purchasedStoreItems": [],
+      "currentTitle": "Explorer",
+      "level": 1,
+      "theme": "light",
+      "soundMuted": false,
+      "adaptText": false,
+      "hardcoreBest": 0,
+      "isAdmin": false
+    }
+  ],
+  "currentSession": [
+    {
+      "id": "session",
+      "user": {
+        "id": "cNg80UK3Cds",
+        "name": "miguel",
+        "email": "miguel@miguel",
+        "password": "miguel",
+        "isAnonymous": false,
+        "xp": 40,
+        "coins": 0,
+        "solvedSheets": [
+          "worksheet-1781024714765"
+        ],
+        "streak": 1,
+        "longestStreak": 0,
+        "lastActiveDate": "2026-06-09",
+        "avatar": {},
+        "purchasedStoreItems": [],
+        "currentTitle": "Explorer",
+        "level": 1,
+        "theme": "light",
+        "soundMuted": false,
+        "adaptText": false,
+        "hardcoreBest": 0,
+        "isAdmin": false
+      }
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

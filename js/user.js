@@ -16,6 +16,8 @@ export class User {
     this.currentTitle = "Explorer";
     this.level = 1;
     this.theme = "light";
+    this.soundMuted = false;
+    this.adaptText = false;
     this.hardcoreBest = 0;
     this.isAdmin = false;
   }

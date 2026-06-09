@@ -73,7 +73,7 @@ export default class WorksheetView {
     );
   }
 
-  _onExerciseCompleted(e) {
+  async _onExerciseCompleted(e) {
     const ec = this.container.querySelector("#exercise-container");
     if (e.detail.correct && ec) {
       const isHardcore = this.model.hardcore;
@@ -90,13 +90,13 @@ export default class WorksheetView {
     if (this.model.hardcore && !e.detail.correct) {
       const correctCount = this.model.correctAnswers;
       const coinsEarned = correctCount * HardcoreWorksheetModel.COIN_REWARD;
-      const user = this.model.sessionModel?.getSession();
+      const user = await this.model.sessionModel?.getSession();
       let isNewBest = false;
       if (user) {
         isNewBest = correctCount > (user.hardcoreBest || 0);
         if (isNewBest) {
           user.hardcoreBest = correctCount;
-          this.model.sessionModel.updateUser(user);
+          await this.model.sessionModel.updateUser(user);
         }
       }
       this._showHardcoreResult(correctCount, coinsEarned, isNewBest);
@@ -111,7 +111,7 @@ export default class WorksheetView {
     }, 300);
   }
 
-  _renderResults() {
+  async _renderResults() {
     const { correct, total } = this.model.getScore();
     const xp = correct * 10;
     const pct = total > 0 ? correct / total : 0;
@@ -119,7 +119,7 @@ export default class WorksheetView {
     if (pct >= 1) msg = "Perfect!";
     else if (pct >= 0.6) msg = "Good work!";
 
-    const user = this.model.sessionModel?.getSession();
+    const user = await this.model.sessionModel?.getSession();
     let levelProgressHtml = "";
     if (user) {
       const xpInto = user.xp % 200;

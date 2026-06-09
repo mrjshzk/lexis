@@ -1,5 +1,3 @@
-import { SessionModel } from "./session_model.js";
-
 const CATALOG = {
   eyes: [
     { id: "eyes_normal", name: "Normal", value: "normal", price: 0 },
@@ -101,12 +99,12 @@ export class StoreModel {
     return CATALOG;
   }
 
-  getUser() {
-    return this.sessionModel.getSession();
+  async getUser() {
+    return await this.sessionModel.getSession();
   }
 
-  getCoins() {
-    const user = this.getUser();
+  async getCoins() {
+    const user = await this.getUser();
     return user ? user.coins : 0;
   }
 
@@ -114,22 +112,23 @@ export class StoreModel {
     return { ...DEFAULT_AVATAR, accessories: [...DEFAULT_AVATAR.accessories] };
   }
 
-  getEquipped() {
-    const user = this.getUser();
+  async getEquipped() {
+    const user = await this.getUser();
     if (!user || !user.avatar || Object.keys(user.avatar).length === 0) {
       return this.getDefaultAvatar();
     }
     return user.avatar;
   }
 
-  getPurchased() {
-    const user = this.getUser();
+  async getPurchased() {
+    const user = await this.getUser();
     if (!user) return [...FREE_ITEM_IDS];
     return [...FREE_ITEM_IDS, ...(user.purchasedStoreItems || [])];
   }
 
-  isOwned(itemId) {
-    return this.getPurchased().includes(itemId);
+  async isOwned(itemId) {
+    const purchased = await this.getPurchased();
+    return purchased.includes(itemId);
   }
 
   getItemById(itemId) {
@@ -143,13 +142,13 @@ export class StoreModel {
     return entry ? entry[0] : null;
   }
 
-  purchase(itemId) {
+  async purchase(itemId) {
     const item = this.getItemById(itemId);
     if (!item) return { ok: false, error: "Item not found." };
 
-    if (this.isOwned(itemId)) return { ok: false, error: "Already owned." };
+    if (await this.isOwned(itemId)) return { ok: false, error: "Already owned." };
 
-    const user = this.getUser();
+    const user = await this.getUser();
     if (!user) return { ok: false, error: "No active session." };
 
     if (user.coins < item.price) return { ok: false, error: "Not enough coins." };
@@ -157,13 +156,13 @@ export class StoreModel {
     user.coins -= item.price;
     if (!user.purchasedStoreItems) user.purchasedStoreItems = [];
     user.purchasedStoreItems.push(itemId);
-    this.sessionModel.updateUser(user);
+    await this.sessionModel.updateUser(user);
 
     return { ok: true, user };
   }
 
-  equip(category, value) {
-    const user = this.getUser();
+  async equip(category, value) {
+    const user = await this.getUser();
     if (!user) return { ok: false, error: "No active session." };
 
     if (!user.avatar || Object.keys(user.avatar).length === 0) {
@@ -180,7 +179,7 @@ export class StoreModel {
       user.avatar[category] = value;
     }
 
-    this.sessionModel.updateUser(user);
+    await this.sessionModel.updateUser(user);
     return { ok: true, user };
   }
 }
