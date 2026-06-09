@@ -55,8 +55,7 @@ export class ShopView {
   _categories() { return this.mode === "store" ? STORE_CATS : CUSTOM_CATS; }
   _tab() { return this.mode === "customize" ? "customization" : "store"; }
 
-  _isEquipped(item) {
-    const equipped = this.storeModel.getEquipped();
+  _isEquipped(item, equipped) {
     if (this.activeCategory === "accessories") {
       if (item.value === "none") return (equipped.accessories || []).length === 0;
       return (equipped.accessories || []).includes(item.value);
@@ -65,7 +64,7 @@ export class ShopView {
     return equipped[this.activeCategory] === item.value;
   }
 
-  render() {
+  async render() {
     if (window.setActiveTab) window.setActiveTab(this._tab());
 
     const mc = document.querySelector("#main-container");
@@ -77,17 +76,18 @@ export class ShopView {
             <button class="btn btn-sm rounded-pill px-3 py-1 ${k === this.activeCategory ? "lexis-tab-active" : "lexis-tab-inactive"}" data-category="${k}">${LABELS[k]}</button>
           `).join("")}
         </div>
-        <div class="d-flex flex-wrap gap-3 justify-content-center lexis-contained" id="shop-items-grid">${this._renderItems()}</div>
+        <div class="d-flex flex-wrap gap-3 justify-content-center lexis-contained" id="shop-items-grid">${await this._renderItems()}</div>
       </div>`;
     this._wireEvents();
   }
 
-  _renderItems() {
+  async _renderItems() {
     const catalog = this.storeModel.getCatalog();
     const items = catalog[this.activeCategory] || [];
-    const purchased = this.storeModel.getPurchased();
-    const equipped = this.storeModel.getEquipped();
-    const coins = this.sessionModel.getSession()?.coins ?? 0;
+    const purchased = await this.storeModel.getPurchased();
+    const equipped = await this.storeModel.getEquipped();
+    const user = await this.sessionModel.getSession();
+    const coins = user?.coins ?? 0;
 
     const filtered = this.mode === "customize" ? items.filter(i => purchased.includes(i.id)) : items;
     if (this.mode === "customize" && !filtered.length) {
@@ -96,7 +96,7 @@ export class ShopView {
 
     return filtered.map((item) => {
       const owned = purchased.includes(item.id);
-      const isEquipped = this._isEquipped(item);
+      const isEquipped = this._isEquipped(item, equipped);
       const itemClass = isEquipped ? "lexis-item-equipped" : "lexis-item-card";
 
       let thumb;
@@ -134,11 +134,11 @@ export class ShopView {
     if (!grid) return;
 
     if (this.mode === "store") {
-      grid.addEventListener("shop:buy", (e) => {
-        const r = this.storeModel.purchase(e.detail);
+      grid.addEventListener("shop:buy", async (e) => {
+        const r = await this.storeModel.purchase(e.detail);
         if (r.ok) {
           const item = this.storeModel.getItemById(e.detail);
-          if (item) this.storeModel.equip(this.storeModel.getItemCategory(e.detail), item.value);
+          if (item) await this.storeModel.equip(this.storeModel.getItemCategory(e.detail), item.value);
           document.querySelector("#main-container").dispatchEvent(new CustomEvent("avatar:updated"));
           this.render();
         } else {
@@ -151,10 +151,10 @@ export class ShopView {
         }
       });
     } else {
-      grid.addEventListener("click", (e) => {
+      grid.addEventListener("click", async (e) => {
         const card = e.target.closest("[data-action='equip']");
         if (!card) return;
-        this.storeModel.equip(card.dataset.category, card.dataset.value);
+        await this.storeModel.equip(card.dataset.category, card.dataset.value);
         document.querySelector("#main-container").dispatchEvent(new CustomEvent("avatar:updated"));
         this.render();
       });

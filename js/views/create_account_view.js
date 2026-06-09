@@ -21,19 +21,38 @@ export class CreateAccountView {
           </form>
         </div>
       </div>`;
-    document.getElementById("ca-skip").onclick = () => { window.location.href = import.meta.env.BASE_URL + "html/dashboard.html"; };
-    document.getElementById("ca-back-btn").onclick = () => { main.innerHTML = this.#savedHtml; main.dispatchEvent(new CustomEvent("index:render")); };
+    document.getElementById("ca-skip").onclick = () => {
+      window.location.href = import.meta.env.BASE_URL + "html/dashboard.html";
+    };
+    document.getElementById("ca-back-btn").onclick = () => {
+      main.innerHTML = this.#savedHtml;
+      main.dispatchEvent(new CustomEvent("index:render"));
+    };
     document.getElementById("create-account-form").onsubmit = (e) => {
       e.preventDefault();
       const name = document.getElementById("ca-name").value.trim();
       const email = document.getElementById("ca-email").value.trim();
       const password = document.getElementById("ca-password").value;
-      const r = this.#sessionModel.createAccount({ name, email, password });
-      if (!r.ok) { const err = document.getElementById("ca-error"); err.textContent = r.error; err.style.display = "block"; }
-      else window.location.href = import.meta.env.BASE_URL + "html/dashboard.html";
+      this.#sessionModel.createAccount({ name, email, password }).then((r) => {
+        if (!r.ok) {
+          const err = document.getElementById("ca-error");
+          err.textContent = r.error;
+          err.style.display = "block";
+        } else {
+          window.location.href =
+            import.meta.env.BASE_URL + "html/dashboard.html";
+        }
+      });
     };
   };
 
-  attachTrigger() { document.querySelectorAll("[data-trigger='register']").forEach(el => el.addEventListener("click", this.#render)); }
-  constructor(sessionModel) { this.#sessionModel = sessionModel; this.attachTrigger(); }
+  attachTrigger() {
+    document
+      .querySelectorAll("[data-trigger='register']")
+      .forEach((el) => el.addEventListener("click", this.#render));
+  }
+  constructor(sessionModel) {
+    this.#sessionModel = sessionModel;
+    this.attachTrigger();
+  }
 }

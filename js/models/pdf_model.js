@@ -10,8 +10,8 @@ export class PdfModel {
     this.sessionModel = sessionModel;
   }
 
-  getPdf() {
-    const user = this.sessionModel.getSession();
+  async getPdf() {
+    const user = await this.sessionModel.getSession();
     return user?.pdf || null;
   }
 
@@ -30,17 +30,17 @@ export class PdfModel {
     const user = this.sessionModel.getSession();
     if (user) {
       user.pdf = { text, name: file.name };
-      this.sessionModel.updateUser(user);
+      await this.sessionModel.updateUser(user);
     }
 
     return { text, name: file.name };
   }
 
-  clearPdf() {
-    const user = this.sessionModel.getSession();
+  async clearPdf() {
+    const user = await this.sessionModel.getSession();
     if (user) {
       delete user.pdf;
-      this.sessionModel.updateUser(user);
+      await this.sessionModel.updateUser(user);
     }
   }
 }

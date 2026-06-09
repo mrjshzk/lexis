@@ -33,8 +33,8 @@ export default class WorksheetModel {
     return { correct: this.correctAnswers, total: this.totalAnswers };
   }
 
-  _dispatchStreak() {
-    const streakResult = this.sessionModel?.recordDailyActivity();
+  async _dispatchStreak() {
+    const streakResult = await this.sessionModel?.recordDailyActivity();
     if (streakResult) {
       document.body.dispatchEvent(
         new CustomEvent("streak:updated", { detail: streakResult }),
@@ -42,8 +42,8 @@ export default class WorksheetModel {
     }
   }
 
-  _persistProgress() {
-    const user = this.sessionModel.getSession();
+  async _persistProgress() {
+    const user = await this.sessionModel.getSession();
     if (!user) return;
 
     if (
@@ -80,8 +80,8 @@ export default class WorksheetModel {
       }
     }
 
-    this.sessionModel?.updateUser(user);
+    await this.sessionModel?.updateUser(user);
 
-    this._dispatchStreak();
+    await this._dispatchStreak();
   }
 }

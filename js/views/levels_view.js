@@ -35,17 +35,17 @@ export class LevelsView {
     if (btn) btn.onclick = () => this.render();
   }
 
-  _getProgress() {
-    const user = this.sessionModel.getSession();
+  async _getProgress() {
+    const user = await this.sessionModel.getSession();
     return Math.min(user?.solvedSheets?.length ?? 0, TOTAL_STEPS);
   }
 
-  render() {
+  async render() {
     if (window.setActiveTab) window.setActiveTab(null);
-    const user = this.sessionModel.getSession();
+    const user = await this.sessionModel.getSession();
     const isGuest = user?.isAnonymous ?? false;
     const guestCapped = isGuest && (user?.solvedSheets?.length ?? 0) >= 2;
-    const progress = this._getProgress();
+    const progress = await this._getProgress();
     const mc = document.querySelector("#main-container");
     const isNormal = this.currentMode === "normal";
 
@@ -69,14 +69,15 @@ export class LevelsView {
         const name = mc.querySelector("#guest-signup-name").value.trim();
         const email = mc.querySelector("#guest-signup-email").value.trim();
         const password = mc.querySelector("#guest-signup-password").value;
-        const r = this.sessionModel.convertGuestToAccount({ name, email, password });
-        if (!r.ok) {
-          const err = mc.querySelector("#guest-signup-error");
-          err.textContent = r.error;
-          err.style.display = "block";
-        } else {
-          mc.dispatchEvent(new CustomEvent("worksheet:cancel"));
-        }
+        this.sessionModel.convertGuestToAccount({ name, email, password }).then((r) => {
+          if (!r.ok) {
+            const err = mc.querySelector("#guest-signup-error");
+            err.textContent = r.error;
+            err.style.display = "block";
+          } else {
+            mc.dispatchEvent(new CustomEvent("worksheet:cancel"));
+          }
+        });
       });
       return;
     }

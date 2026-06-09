@@ -37,11 +37,11 @@ export default class HardcoreWorksheetModel extends WorksheetModel {
     return this.getCurrentExercise();
   }
 
-  _persistProgress() {
-    const user = this.sessionModel?.getSession();
+  async _persistProgress() {
+    const user = await this.sessionModel?.getSession();
     if (!user) return;
     user.coins += HardcoreWorksheetModel.COIN_REWARD;
-    this.sessionModel.updateUser(user);
-    this._dispatchStreak();
+    await this.sessionModel.updateUser(user);
+    await this._dispatchStreak();
   }
 }

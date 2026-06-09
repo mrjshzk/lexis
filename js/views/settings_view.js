@@ -8,9 +8,9 @@ export class SettingsView {
     });
   }
 
-  render() {
+  async render() {
     if (window.setActiveTab) window.setActiveTab("settings");
-    const user = this.sessionModel.getSession() || {};
+    const user = await this.sessionModel.getSession() || {};
     const currentTheme = user.theme || "light";
     const adaptText = user.adaptText || false;
     const soundMuted = isMuted();
@@ -68,9 +68,9 @@ export class SettingsView {
       </div>`;
 
     const adaptToggle = mainContainer.querySelector("#adapt-text-toggle");
-    adaptToggle.addEventListener("change", () => {
+    adaptToggle.addEventListener("change", async () => {
       user.adaptText = adaptToggle.checked;
-      this.sessionModel.updateUser(user);
+      await this.sessionModel.updateUser(user);
       document.body.classList.toggle("dyslexic-mode", adaptToggle.checked);
     });
 
@@ -82,14 +82,14 @@ export class SettingsView {
     }
 
     const themeToggle = mainContainer.querySelector("#dark-mode-toggle");
-    themeToggle.addEventListener("change", () => {
+    themeToggle.addEventListener("change", async () => {
       const theme = themeToggle.checked ? "dark" : "light";
       user.theme = theme;
-      this.sessionModel.updateUser(user);
+      await this.sessionModel.updateUser(user);
       document.documentElement.setAttribute("data-bs-theme", theme);
     });
 
-    mainContainer.querySelector("#settings-form").addEventListener("submit", (e) => {
+    mainContainer.querySelector("#settings-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const newName = mainContainer.querySelector("#settings-username").value.trim();
       const newEmail = mainContainer.querySelector("#settings-email").value.trim();
@@ -105,7 +105,7 @@ export class SettingsView {
       user.name = newName;
       user.email = newEmail;
       user.password = newPassword;
-      this.sessionModel.updateUser(user);
+      await this.sessionModel.updateUser(user);
       mainContainer.dispatchEvent(new CustomEvent("avatar:updated"));
 
       const err = mainContainer.querySelector("#settings-error");

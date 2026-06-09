@@ -8,9 +8,9 @@ export class PdfView {
     });
   }
 
-  _renderContent() {
+  async _renderContent() {
     const mc = document.querySelector("#main-container");
-    const pdf = this.pdfModel.getPdf();
+    const pdf = await this.pdfModel.getPdf();
 
     if (pdf) {
       mc.innerHTML = `
@@ -23,8 +23,9 @@ export class PdfView {
             <div class="lexis-pdf-content">${pdf.text}</div>
           </div>
         </div>`;
-      mc.querySelector("#clear-pdf").addEventListener("click", () => {
-        this.pdfModel.clearPdf();
+      
+      mc.querySelector("#clear-pdf").addEventListener("click", async () => {
+        await this.pdfModel.clearPdf();
         this._renderContent();
       });
       return;
@@ -58,9 +59,9 @@ export class PdfView {
       }
     });
   }
-
-  render() {
+  
+  async render() {
     if (window.setActiveTab) window.setActiveTab("pdf");
-    this._renderContent();
+    await this._renderContent();
   }
 }

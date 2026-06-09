@@ -6,9 +6,10 @@ export class AdminView {
     });
   }
 
-  render() {
+  async render() {
     if (window.setActiveTab) window.setActiveTab("admin");
-    const users = this.sessionModel.getAllUsers().filter(u => !u.isAnonymous);
+    const allUsers = await this.sessionModel.getAllUsers();
+    const users = allUsers.filter(u => !u.isAnonymous);
     const mc = document.querySelector("#main-container");
 
     mc.innerHTML = `
@@ -57,10 +58,10 @@ export class AdminView {
         const input = span.querySelector("input");
         input.focus();
         input.select();
-        const save = () => {
+        const save = async () => {
           const newVal = parseInt(input.value);
           if (!isNaN(newVal)) {
-            this.sessionModel.updateUserStat(span.dataset.user, span.dataset.field, newVal);
+            await this.sessionModel.updateUserStat(span.dataset.user, span.dataset.field, newVal);
             span.textContent = newVal;
           } else {
             span.textContent = val;
@@ -72,9 +73,9 @@ export class AdminView {
     });
 
     mc.querySelectorAll(".admin-delete-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", async () => {
         if (confirm(`Delete user "${btn.dataset.name}"?`)) {
-          this.sessionModel.deleteUser(btn.dataset.user);
+          await this.sessionModel.deleteUser(btn.dataset.user);
           this.render();
         }
       });
