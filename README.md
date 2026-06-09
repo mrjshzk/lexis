@@ -17,3 +17,4 @@
 - Bootstrap for easier CSS
 - pdfjs-dist for PDF parsing
 - Dicebear for avatar generation
+- canvas-confetti for confetti animations
