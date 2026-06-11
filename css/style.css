@@ -124,6 +124,28 @@ body {
 	object-fit: cover;
 }
 
+.lexis-avatar-clickable {
+	cursor: pointer;
+	transition: transform 0.15s;
+}
+.lexis-avatar-clickable:hover {
+	transform: scale(1.05);
+}
+
+.lexis-avatar-fullscreen-card {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	animation: lexis-pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.lexis-avatar-fullscreen {
+	width: min(80vw, 80vh, 400px);
+	height: min(80vw, 80vh, 400px);
+	border-radius: 50%;
+	object-fit: cover;
+}
+
 .lexis-logo-img {
 	height: 50px;
 	cursor: pointer;

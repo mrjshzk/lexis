@@ -58,6 +58,17 @@ function setBar(id, pct) {
   if (el) el.style.width = `${pct}%`;
 }
 
+function showAvatarFullscreen(avatarSrc) {
+  const overlay = document.createElement("div");
+  overlay.className = "lexis-levelup-overlay";
+  overlay.innerHTML = `
+    <div class="lexis-avatar-fullscreen-card">
+      <img src="${avatarSrc}" alt="User avatar" class="lexis-avatar-fullscreen">
+    </div>`;
+  overlay.addEventListener("click", () => overlay.remove());
+  document.body.appendChild(overlay);
+}
+
 async function refreshSidebar() {
   const user = await sessionModel.getSession();
   if (!user) return;
@@ -170,6 +181,15 @@ if (logoutBtn) {
     window.location.href = import.meta.env.BASE_URL + "index.html";
   });
 }
+
+document.getElementById("user-avatar")?.addEventListener("click", () => {
+  const src = document.getElementById("user-avatar").src;
+  showAvatarFullscreen(src);
+});
+document.getElementById("user-avatar-mobile")?.addEventListener("click", () => {
+  const src = document.getElementById("user-avatar-mobile").src;
+  showAvatarFullscreen(src);
+});
 
 mainContainer.addEventListener("worksheet:cancel", () => {
   window.setActiveTab(null);

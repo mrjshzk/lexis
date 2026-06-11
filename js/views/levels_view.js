@@ -3,9 +3,18 @@ import HardcoreWorksheetModel from "../models/hardcore_worksheet_model.js";
 import WorksheetView from "./worksheet_view.js";
 import { WORDS, SENTENCES } from "../data.js";
 
-const TYPES = ["spelling", "letter_dnd", "missing", "word_order", "letter_reversal", "visual_discrimination"];
+const TYPES = [
+  "spelling",
+  "letter_dnd",
+  "missing",
+  "word_order",
+  "letter_reversal",
+  "visual_discrimination",
+];
 
-function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function rand(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
 function generateExercises(count) {
   const out = [];
@@ -13,12 +22,36 @@ function generateExercises(count) {
     const type = rand(TYPES);
     let data;
     switch (type) {
-      case "spelling": { const w = rand(WORDS); data = { word: w.word, hint: w.hint }; break; }
-      case "letter_dnd": { const w = rand(WORDS); data = { word: w.word, hint: w.hint }; break; }
-      case "missing": { const w = rand(WORDS); data = { word: w.word, hint: w.hint }; break; }
-      case "word_order": { const s = rand(SENTENCES); data = { sentence: s.sentence, hint: s.hint }; break; }
-      case "letter_reversal": { const w = rand(WORDS); data = { word: w.word, hint: w.hint }; break; }
-      case "visual_discrimination": { const w = rand(WORDS); data = { word: w.word, hint: w.hint }; break; }
+      case "spelling": {
+        const w = rand(WORDS);
+        data = { word: w.word, hint: w.hint };
+        break;
+      }
+      case "letter_dnd": {
+        const w = rand(WORDS);
+        data = { word: w.word, hint: w.hint };
+        break;
+      }
+      case "missing": {
+        const w = rand(WORDS);
+        data = { word: w.word, hint: w.hint };
+        break;
+      }
+      case "word_order": {
+        const s = rand(SENTENCES);
+        data = { sentence: s.sentence, hint: s.hint };
+        break;
+      }
+      case "letter_reversal": {
+        const w = rand(WORDS);
+        data = { word: w.word, hint: w.hint };
+        break;
+      }
+      case "visual_discrimination": {
+        const w = rand(WORDS);
+        data = { word: w.word, hint: w.hint };
+        break;
+      }
     }
     out.push({ type, data });
   }
@@ -69,33 +102,41 @@ export class LevelsView {
         const name = mc.querySelector("#guest-signup-name").value.trim();
         const email = mc.querySelector("#guest-signup-email").value.trim();
         const password = mc.querySelector("#guest-signup-password").value;
-        this.sessionModel.convertGuestToAccount({ name, email, password }).then((r) => {
-          if (!r.ok) {
-            const err = mc.querySelector("#guest-signup-error");
-            err.textContent = r.error;
-            err.style.display = "block";
-          } else {
-            mc.dispatchEvent(new CustomEvent("worksheet:cancel"));
-          }
-        });
+        this.sessionModel
+          .convertGuestToAccount({ name, email, password })
+          .then((r) => {
+            if (!r.ok) {
+              const err = mc.querySelector("#guest-signup-error");
+              err.textContent = r.error;
+              err.style.display = "block";
+            } else {
+              mc.dispatchEvent(new CustomEvent("worksheet:cancel"));
+            }
+          });
       });
       return;
     }
 
     mc.innerHTML = `
       <div class="d-flex flex-column align-items-center justify-content-center h-100 py-4">
-        ${!isGuest ? `
+        ${
+          !isGuest
+            ? `
         <div class="mb-4">
           <select id="mode-select" class="form-select d-inline-block text-white border-0 rounded-4 px-4 py-2 lexis-mode-select">
             <option value="normal" ${isNormal ? "selected" : ""}>Normal Mode</option>
             <option value="hardcore" ${!isNormal ? "selected" : ""}>Hard Mode</option>
           </select>
         </div>
-        ` : ''}
+        `
+            : ""
+        }
 
-        ${isNormal ? `
+        ${
+          isNormal
+            ? `
         <div class="position-relative flex-grow-1 d-flex align-items-center justify-content-center">
-          ${progress === 0 ? '<div class="alert lexis-prompt-bar rounded-4 px-4 py-3 text-center position-absolute" style="top:0;z-index:2;font-size:0.95rem;">Complete worksheets to unlock levels along the path!</div>' : ''}
+          ${progress === 0 ? '<div class="alert lexis-prompt-bar rounded-4 px-4 py-3 text-center position-absolute" style="top:0;z-index:2;font-size:0.95rem;">Complete worksheets to unlock levels along the path!</div>' : ""}
           <div class="position-relative lexis-path" id="path-container">
             <svg class="position-absolute w-100 h-100 lexis-path-svg"
                  viewBox="0 0 280 520" preserveAspectRatio="none">
@@ -104,14 +145,16 @@ export class LevelsView {
             ${this._renderNodes(progress)}
           </div>
         </div>
-        ` : `
+        `
+            : `
         <div class="flex-grow-1 d-flex flex-column align-items-center justify-content-center gap-2">
           <h2 class="fw-normal lexis-text-p">Hard Mode</h2>
           <p class="text-secondary">Earn <span class="lexis-text-orange">${HardcoreWorksheetModel.COIN_REWARD} coin</span> per correct answer</p>
-          ${user.hardcoreBest > 0 ? `<p class="small lexis-text-p">Your best: <strong>${user.hardcoreBest}</strong> correct</p>` : ''}
+          ${user.hardcoreBest > 0 ? `<p class="small lexis-text-p">Your best: <strong>${user.hardcoreBest}</strong> correct</p>` : ""}
           <p class="small text-secondary">One mistake and it's over</p>
         </div>
-        `}
+        `
+        }
 
         <div class="mt-3 mb-4">
           <button id="start-btn" class="btn text-white rounded-3 px-5 py-2 lexis-btn-start">Start</button>
@@ -128,16 +171,21 @@ export class LevelsView {
 
     if (isNormal) {
       mc.querySelectorAll(".lvl-node[data-idx]").forEach((el) => {
-        if (!el.dataset.locked) el.addEventListener("click", () => this._startWorksheet());
+        if (!el.dataset.locked)
+          el.addEventListener("click", () => this._startWorksheet());
       });
     }
 
-    document.querySelector("#start-btn")?.addEventListener("click", () => this._startWorksheet());
+    document
+      .querySelector("#start-btn")
+      ?.addEventListener("click", () => this._startWorksheet());
   }
 
   _renderConnectors() {
     let html = "";
-    const containerH = 520, leftX = 56, rightX = 224;
+    const containerH = 520,
+      leftX = 56,
+      rightX = 224;
     for (let i = 0; i < TOTAL_STEPS - 1; i++) {
       const isLeft = i % 2 === 0;
       html += `<line x1="${isLeft ? leftX : rightX}" y1="${(i / (TOTAL_STEPS - 1)) * containerH}"
@@ -149,10 +197,13 @@ export class LevelsView {
 
   _renderNodes(progress) {
     let html = "";
-    const containerH = 520, nodeSize = 44, half = nodeSize / 2;
+    const containerH = 520,
+      nodeSize = 44,
+      half = nodeSize / 2;
 
     for (let i = 0; i < TOTAL_STEPS; i++) {
-      const active = i === progress, locked = i > progress;
+      const active = i === progress,
+        locked = i > progress;
       const isLeft = i % 2 === 0;
       const top = (i / (TOTAL_STEPS - 1)) * containerH - half;
       const left = isLeft ? 56 - half : 224 - half;
@@ -162,7 +213,9 @@ export class LevelsView {
       else if (active) cls += " lexis-node-active";
       else cls += " lexis-node-done";
 
-      const ring = active ? "box-shadow: 0 0 0 4px var(--lexis-bg-main), 0 0 0 7px var(--lexis-primary);" : "";
+      const ring = active
+        ? "box-shadow: 0 0 0 4px var(--lexis-bg-main), 0 0 0 7px var(--lexis-primary);"
+        : "";
 
       html += `<div class="${cls}" data-idx="${i}" ${locked ? 'data-locked="true"' : ""}
                style="width:${nodeSize}px;height:${nodeSize}px;top:${top}px;left:${left}px;${ring}"
@@ -174,9 +227,14 @@ export class LevelsView {
   _startWorksheet() {
     const modeSelect = document.querySelector("#mode-select");
     const mode = modeSelect ? modeSelect.value : "normal";
-    const model = mode === "hardcore"
-      ?       new HardcoreWorksheetModel(this.sessionModel)
-      : new WorksheetModel(generateExercises(5), `worksheet-${Date.now()}`, this.sessionModel);
+    const model =
+      mode === "hardcore"
+        ? new HardcoreWorksheetModel(this.sessionModel)
+        : new WorksheetModel(
+            generateExercises(5),
+            `worksheet-${Date.now()}`,
+            this.sessionModel,
+          );
     new WorksheetView(model).render();
   }
 }
