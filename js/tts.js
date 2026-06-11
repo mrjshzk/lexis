@@ -47,7 +47,3 @@ export function stop() {
 export function isSpeaking() {
   return window.speechSynthesis.speaking;
 }
-
-export function isTtsSupported() {
-  return "speechSynthesis" in window;
-}

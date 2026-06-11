@@ -1,11 +1,13 @@
 import { playCorrect, playIncorrect } from "../sound.js";
 import { getExerciseContainer } from "../utils.js";
+import { speakSequence, stop } from "../tts.js";
 
 export default class VisualDiscriminationView {
   constructor(model, container) {
     this.model = model;
     this.container = container;
     this._onOptionClick = this._onOptionClick.bind(this);
+    this._readAloud = this._readAloud.bind(this);
   }
 
   _getContainer() {
@@ -17,7 +19,10 @@ export default class VisualDiscriminationView {
     if (!c) return;
     c.innerHTML = `
       <div class="w-100 d-flex flex-column align-items-center gap-4 lexis-contained-narrow">
-        <div class="rounded-4 shadow-sm px-4 py-3 text-center w-100 lexis-ex-prompt">Find the word that matches</div>
+        <div class="rounded-4 shadow-sm px-4 py-3 text-center w-100 lexis-ex-prompt position-relative">
+          Find the word that matches
+          <button class="lexis-tts-btn position-absolute top-50 end-0 translate-middle-y me-2" title="Read aloud">🔊</button>
+        </div>
         <div class="lexis-hint-toggle d-flex align-items-center gap-1 small cursor-pointer mb-2">
           <span class="lexis-hint-arrow" style="font-size:0.65rem;">▶</span> Hint
         </div>
@@ -33,6 +38,7 @@ export default class VisualDiscriminationView {
     c.querySelectorAll("button[data-opt]").forEach((b) =>
       b.addEventListener("click", this._onOptionClick),
     );
+    c.querySelector(".lexis-tts-btn")?.addEventListener("click", this._readAloud);
     const hintToggle = c.querySelector(".lexis-hint-toggle");
     const hintText = c.querySelector(".lexis-hint-text");
     if (hintToggle && hintText && this.model.hint) {
@@ -46,7 +52,20 @@ export default class VisualDiscriminationView {
     }
   }
 
+  async _readAloud(e) {
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    stop();
+    const texts = ["Find the word that matches"];
+    if (this.model.hint) texts.push(this.model.hint);
+    texts.push(this.model.word);
+    texts.push(...this.model.options);
+    try { await speakSequence(texts); } catch {}
+    btn.disabled = false;
+  }
+
   _onOptionClick(e) {
+    stop();
     const c = getExerciseContainer(this);
     const btn = e.currentTarget;
     const chosen = btn.getAttribute("data-opt");

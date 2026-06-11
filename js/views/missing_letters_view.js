@@ -1,8 +1,9 @@
 import { playCorrect, playIncorrect } from "../sound.js";
 import { getExerciseContainer } from "../utils.js";
+import { speakSequence, stop } from "../tts.js";
 
 export default class MissingLettersView {
-  constructor(model, container) { this.model = model; this.container = container; this._onSubmit = this._onSubmit.bind(this); }
+  constructor(model, container) { this.model = model; this.container = container; this._onSubmit = this._onSubmit.bind(this); this._readAloud = this._readAloud.bind(this); }
   _getContainer() { return getExerciseContainer(this); }
 
   render() {
@@ -16,7 +17,10 @@ export default class MissingLettersView {
     }
     c.innerHTML = `
       <div class="w-100 d-flex flex-column align-items-center gap-4 lexis-contained-narrow">
-        <div class="rounded-4 shadow-sm px-4 py-3 text-center w-100 lexis-ex-prompt">Fill in the missing letters</div>
+        <div class="rounded-4 shadow-sm px-4 py-3 text-center w-100 lexis-ex-prompt position-relative">
+          Fill in the missing letters
+          <button class="lexis-tts-btn position-absolute top-50 end-0 translate-middle-y me-2" title="Read aloud">🔊</button>
+        </div>
         <div class="lexis-hint-toggle d-flex align-items-center gap-1 small cursor-pointer mb-2">
           <span class="lexis-hint-arrow" style="font-size:0.65rem;">▶</span> Hint
         </div>
@@ -26,6 +30,7 @@ export default class MissingLettersView {
         <div id="missing-feedback"></div>
       </div>`;
     c.querySelector("#missing-submit").addEventListener("click", this._onSubmit);
+    c.querySelector(".lexis-tts-btn")?.addEventListener("click", this._readAloud);
     const hintToggle = c.querySelector(".lexis-hint-toggle");
     const hintText = c.querySelector(".lexis-hint-text");
     if (hintToggle && hintText && this.model.hint) {
@@ -39,7 +44,18 @@ export default class MissingLettersView {
     }
   }
 
+  async _readAloud(e) {
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    stop();
+    const texts = ["Fill in the missing letters"];
+    if (this.model.hint) texts.push(this.model.hint);
+    try { await speakSequence(texts); } catch {}
+    btn.disabled = false;
+  }
+
   _onSubmit() {
+    stop();
     const c = this._getContainer();
     if (!c) return;
     const inputs = Array.from(c.querySelectorAll("input[data-index]"));

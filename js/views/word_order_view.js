@@ -1,4 +1,5 @@
 import { playCorrect, playIncorrect } from "../sound.js";
+import { speakSequence, stop } from "../tts.js";
 import DragBaseView from "./drag_base_view.js";
 
 export default class WordOrderView extends DragBaseView {
@@ -7,6 +8,7 @@ export default class WordOrderView extends DragBaseView {
     this.selected = [];
     this._onSubmit = this._onSubmit.bind(this);
     this._onHintWord = this._onHintWord.bind(this);
+    this._readAloud = this._readAloud.bind(this);
   }
 
   render() {
@@ -14,7 +16,10 @@ export default class WordOrderView extends DragBaseView {
     if (!c) return;
     c.innerHTML = `
       <div class="w-100 d-flex flex-column align-items-center gap-4 lexis-contained-narrow">
-        <div class="rounded-4 shadow-sm px-4 py-3 text-center w-100 lexis-ex-prompt">Arrange the words in correct order</div>
+        <div class="rounded-4 shadow-sm px-4 py-3 text-center w-100 lexis-ex-prompt position-relative">
+          Arrange the words in correct order
+          <button class="lexis-tts-btn position-absolute top-50 end-0 translate-middle-y me-2" title="Read aloud">🔊</button>
+        </div>
         <div class="lexis-hint-toggle d-flex align-items-center gap-1 small cursor-pointer mb-2">
           <span class="lexis-hint-arrow" style="font-size:0.65rem;">▶</span> Hint
         </div>
@@ -32,6 +37,7 @@ export default class WordOrderView extends DragBaseView {
     this._attachDrag(c, "#word-pool .word-chip");
     c.querySelector("#submit-btn").addEventListener("click", this._onSubmit);
     c.querySelector("#hint-btn").addEventListener("click", this._onHintWord);
+    c.querySelector(".lexis-tts-btn")?.addEventListener("click", this._readAloud);
     const hintToggle = c.querySelector(".lexis-hint-toggle");
     const hintText = c.querySelector(".lexis-hint-text");
     if (hintToggle && hintText && this.model.hint) {
@@ -114,7 +120,19 @@ export default class WordOrderView extends DragBaseView {
     c.querySelector("#hint-btn").disabled = true;
   }
 
+  async _readAloud(e) {
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    stop();
+    const texts = ["Arrange the words in correct order"];
+    if (this.model.hint) texts.push(this.model.hint);
+    texts.push(...this.model.shuffled);
+    try { await speakSequence(texts); } catch {}
+    btn.disabled = false;
+  }
+
   _onSubmit() {
+    stop();
     const c = this._getContainer();
     if (!c) return;
     c.querySelector("#submit-btn").disabled = true;

@@ -1,5 +1,6 @@
 import { playCorrect, playIncorrect } from "../sound.js";
 import { getExerciseContainer } from "../utils.js";
+import { speakSequence, stop } from "../tts.js";
 
 export default class LetterReversalView {
   constructor(model, container) {
@@ -7,6 +8,7 @@ export default class LetterReversalView {
     this.container = container;
     this._onLetterClick = this._onLetterClick.bind(this);
     this._onOptionClick = this._onOptionClick.bind(this);
+    this._readAloud = this._readAloud.bind(this);
   }
 
   _getContainer() {
@@ -21,7 +23,10 @@ export default class LetterReversalView {
     const chars = this.model.displayWord.split("");
     c.innerHTML = `
       <div class="w-100 d-flex flex-column align-items-center gap-4 lexis-contained-narrow">
-        <div class="rounded-4 shadow-sm px-4 py-3 text-center w-100 lexis-ex-prompt">Tap the wrong letter, then pick the correct one</div>
+        <div class="rounded-4 shadow-sm px-4 py-3 text-center w-100 lexis-ex-prompt position-relative">
+          Tap the wrong letter, then pick the correct one
+          <button class="lexis-tts-btn position-absolute top-50 end-0 translate-middle-y me-2" title="Read aloud">🔊</button>
+        </div>
         <div class="lexis-hint-toggle d-flex align-items-center gap-1 small cursor-pointer mb-2">
           <span class="lexis-hint-arrow" style="font-size:0.65rem;">▶</span> Hint
         </div>
@@ -44,6 +49,7 @@ export default class LetterReversalView {
     c.querySelectorAll("#lr-options button").forEach((btn) =>
       btn.addEventListener("click", this._onOptionClick),
     );
+    c.querySelector(".lexis-tts-btn")?.addEventListener("click", this._readAloud);
 
     const hintToggle = c.querySelector(".lexis-hint-toggle");
     const hintText = c.querySelector(".lexis-hint-text");
@@ -58,7 +64,18 @@ export default class LetterReversalView {
     }
   }
 
+  async _readAloud(e) {
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    stop();
+    const texts = ["Tap the wrong letter, then pick the correct one"];
+    if (this.model.hint) texts.push(this.model.hint);
+    try { await speakSequence(texts); } catch {}
+    btn.disabled = false;
+  }
+
   _onLetterClick(e) {
+    stop();
     const c = this._getContainer();
     if (!c) return;
     const index = parseInt(e.currentTarget.dataset.index);

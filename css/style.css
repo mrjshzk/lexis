@@ -866,6 +866,28 @@ body {
 	z-index: 1050;
 }
 
+/* TTS button */
+.lexis-tts-btn {
+	background: none;
+	border: none;
+	color: var(--lexis-text-secondary);
+	font-size: 1.1rem;
+	cursor: pointer;
+	padding: 0.25rem;
+	border-radius: 50%;
+	width: 2rem;
+	height: 2rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1;
+	transition: background-color 0.15s, color 0.15s;
+}
+.lexis-tts-btn:hover {
+	color: var(--lexis-primary);
+	background-color: color-mix(in srgb, var(--lexis-primary) 15%, transparent);
+}
+
 /* Hint toggle */
 .lexis-hint-toggle {
 	color: var(--lexis-text-secondary);
