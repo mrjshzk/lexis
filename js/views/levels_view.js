@@ -58,7 +58,13 @@ function generateExercises(count) {
   return out;
 }
 
-const TOTAL_STEPS = 10;
+const WINDOW_NODES = 5;
+const HALF_WINDOW = 2;
+const NODE_SIZE = 64;
+const SPACING = 100;
+const PERIOD = 6;
+const CENTER_X = 140;
+const AMPLITUDE = 120;
 
 export class LevelsView {
   constructor(sessionModel) {
@@ -70,7 +76,7 @@ export class LevelsView {
 
   async _getProgress() {
     const user = await this.sessionModel.getSession();
-    return Math.min(user?.solvedSheets?.length ?? 0, TOTAL_STEPS);
+    return user?.solvedSheets?.length ?? 0;
   }
 
   async render() {
@@ -117,6 +123,9 @@ export class LevelsView {
       return;
     }
 
+    const startIdx = Math.max(0, progress - HALF_WINDOW);
+    const endIdx = startIdx + WINDOW_NODES - 1;
+
     mc.innerHTML = `
       <div class="d-flex flex-column align-items-center justify-content-center h-100 py-4">
         ${
@@ -140,9 +149,9 @@ export class LevelsView {
           <div class="position-relative lexis-path" id="path-container">
             <svg class="position-absolute w-100 h-100 lexis-path-svg"
                  viewBox="0 0 280 520" preserveAspectRatio="none">
-              ${this._renderConnectors()}
+              ${this._renderPath(startIdx, endIdx)}
             </svg>
-            ${this._renderNodes(progress)}
+            ${this._renderNodes(startIdx, endIdx, progress)}
           </div>
         </div>
         `
@@ -181,32 +190,42 @@ export class LevelsView {
       ?.addEventListener("click", () => this._startWorksheet());
   }
 
-  _renderConnectors() {
-    let html = "";
-    const containerH = 520,
-      leftX = 56,
-      rightX = 224;
-    for (let i = 0; i < TOTAL_STEPS - 1; i++) {
-      const isLeft = i % 2 === 0;
-      html += `<line x1="${isLeft ? leftX : rightX}" y1="${(i / (TOTAL_STEPS - 1)) * containerH}"
-                     x2="${!isLeft ? leftX : rightX}" y2="${((i + 1) / (TOTAL_STEPS - 1)) * containerH}"
-                     stroke="var(--lexis-connector)" stroke-width="2" stroke-dasharray="6 4" />`;
-    }
-    return html;
+  _nodeX(i) {
+    return CENTER_X + AMPLITUDE * Math.cos((2 * Math.PI * i) / PERIOD);
   }
 
-  _renderNodes(progress) {
-    let html = "";
-    const containerH = 520,
-      nodeSize = 44,
-      half = nodeSize / 2;
+  _topY() {
+    return 260 - HALF_WINDOW * SPACING;
+  }
 
-    for (let i = 0; i < TOTAL_STEPS; i++) {
+  _renderPath(startIdx, endIdx) {
+    const parts = [];
+    for (let i = startIdx; i < endIdx; i++) {
+      const x0 = this._nodeX(i);
+      const y0 = this._topY() + (i - startIdx) * SPACING;
+      const x1 = this._nodeX(i + 1);
+      const y1 = this._topY() + (i + 1 - startIdx) * SPACING;
+      const xm1 = this._nodeX(i - 1);
+      const ym1 = this._topY() + (i - 1 - startIdx) * SPACING;
+      const x2 = this._nodeX(i + 2);
+      const y2 = this._topY() + (i + 2 - startIdx) * SPACING;
+      const cp1x = x0 + (x1 - xm1) / 6;
+      const cp1y = y0 + (y1 - ym1) / 6;
+      const cp2x = x1 - (x2 - x0) / 6;
+      const cp2y = y1 - (y2 - y0) / 6;
+      parts.push(`M ${x0} ${y0} C ${cp1x} ${cp1y} ${cp2x} ${cp2y} ${x1} ${y1}`);
+    }
+    return `<path d="${parts.join(" ")}" stroke="var(--lexis-connector)" stroke-width="2" stroke-dasharray="6 4" fill="none" />`;
+  }
+
+  _renderNodes(startIdx, endIdx, progress) {
+    let html = "";
+    const half = NODE_SIZE / 2;
+    for (let i = startIdx; i <= endIdx; i++) {
       const active = i === progress,
         locked = i > progress;
-      const isLeft = i % 2 === 0;
-      const top = (i / (TOTAL_STEPS - 1)) * containerH - half;
-      const left = isLeft ? 56 - half : 224 - half;
+      const x = this._nodeX(i) - half;
+      const y = this._topY() + (i - startIdx) * SPACING - half;
 
       let cls = "position-absolute rounded-circle lvl-node lexis-node";
       if (locked) cls += " lexis-node-locked";
@@ -218,7 +237,7 @@ export class LevelsView {
         : "";
 
       html += `<div class="${cls}" data-idx="${i}" ${locked ? 'data-locked="true"' : ""}
-               style="width:${nodeSize}px;height:${nodeSize}px;top:${top}px;left:${left}px;${ring}"
+               style="width:${NODE_SIZE}px;height:${NODE_SIZE}px;top:${y}px;left:${x}px;${ring}"
                onmouseenter="this.style.transform='scale(1.1)'" onmouseleave="this.style.transform='scale(1)'"></div>`;
     }
     return html;
