@@ -13,6 +13,20 @@ import { AdminView } from "./views/admin_view.js";
 import { onThemeChange, assetUrl } from "./theme.js";
 
 const sessionModel = new SessionModel();
+const session = sessionModel.getSession();
+
+const savedTheme = (session && session.theme) || "light";
+document.documentElement.setAttribute("data-bs-theme", savedTheme);
+
+function updateLogo() {
+  const logo = document.querySelector("#sidebar-logo");
+  if (!logo) return;
+  logo.src = document.documentElement.getAttribute("data-bs-theme") === "dark"
+    ? assetUrl("assets/img/LogoOrange.png")
+    : assetUrl("assets/img/LogoBlue.png");
+}
+updateLogo();
+onThemeChange(updateLogo);
 
 const DEFAULT_AVATAR_OPTIONS = {
   eyes: ["cheery"],
@@ -58,19 +72,8 @@ function setBar(id, pct) {
   if (el) el.style.width = `${pct}%`;
 }
 
-function showAvatarFullscreen(avatarSrc) {
-  const overlay = document.createElement("div");
-  overlay.className = "lexis-levelup-overlay";
-  overlay.innerHTML = `
-    <div class="lexis-avatar-fullscreen-card">
-      <img src="${avatarSrc}" alt="User avatar" class="lexis-avatar-fullscreen">
-    </div>`;
-  overlay.addEventListener("click", () => overlay.remove());
-  document.body.appendChild(overlay);
-}
-
-async function refreshSidebar() {
-  const user = await sessionModel.getSession();
+function refreshSidebar() {
+  const user = sessionModel.getSession();
   if (!user) return;
 
   const avatarSrc = createAvatar(bigSmile, getAvatarOptions(user)).toDataUri();
@@ -89,11 +92,11 @@ async function refreshSidebar() {
   setText("#user-xp-mobile", user.xp);
   setText("#user-coins-mobile", user.coins);
 
-  const xpPct = Math.min(Math.round(((user.xp % 200) / 200) * 100), 100);
+  const xpPct = Math.min(Math.round((user.xp % 200) / 200 * 100), 100);
   setBar("#daily-xp-bar", xpPct);
   setText("#daily-xp-text", `${xpPct}%`);
 
-  const coinPct = Math.min(Math.round((user.coins / 100) * 100), 100);
+  const coinPct = Math.min(Math.round(user.coins / 100 * 100), 100);
   setBar("#daily-coins-bar", coinPct);
   setText("#daily-coins-text", `${coinPct}%`);
 
@@ -102,115 +105,98 @@ async function refreshSidebar() {
   setText("#streak-count", user.streak);
   setText("#streak-best", user.longestStreak);
 
-  document
-    .querySelectorAll(
-      "[data-tab='store'], [data-tab='customization'], [data-tab='pdf']",
-    )
-    .forEach((btn) => {
-      btn.classList.toggle("d-none", user.isAnonymous);
-    });
-  document.querySelectorAll(".restricted-admin-tab").forEach((btn) => {
+  document.querySelectorAll("[data-tab='store'], [data-tab='customization'], [data-tab='pdf']").forEach(btn => {
+    btn.classList.toggle("d-none", user.isAnonymous);
+  });
+  document.querySelectorAll(".restricted-admin-tab").forEach(btn => {
     btn.classList.toggle("d-none", !user.isAdmin);
   });
 }
 
-(async () => {
-  const session = await sessionModel.getSession();
+if (session?.adaptText) {
+  document.body.classList.add("dyslexic-mode");
+}
 
-  const savedTheme = (session && session.theme) || "light";
-  document.documentElement.setAttribute("data-bs-theme", savedTheme);
-
-  function updateLogo() {
-    const logo = document.querySelector("#sidebar-logo");
-    if (!logo) return;
-    logo.src =
-      document.documentElement.getAttribute("data-bs-theme") === "dark"
-        ? assetUrl("assets/img/LogoOrange.png")
-        : assetUrl("assets/img/LogoBlue.png");
-  }
-  updateLogo();
-  onThemeChange(updateLogo);
-
-  if (session?.adaptText) {
-    document.body.classList.add("dyslexic-mode");
-  }
-
-  window.setActiveTab = (tab) => {
-    document.querySelectorAll("[data-tab]").forEach((btn) => {
-      btn.classList.remove("lexis-nav-btn-active");
-    });
-    if (tab) {
-      document.querySelectorAll(`[data-tab="${tab}"]`).forEach((btn) => {
-        btn.classList.add("lexis-nav-btn-active");
-      });
-    }
-  };
-
-  await refreshSidebar();
-
-  const mainContainer = document.querySelector("#main-container");
-  window.mainContainer = mainContainer;
-
-  const levelsView = new LevelsView(sessionModel);
-  const pdfView = new PdfView(sessionModel);
-  const shopView = new ShopView(sessionModel);
-  const settingsView = new SettingsView(sessionModel);
-  const adminView = new AdminView(sessionModel);
-  await levelsView.render();
-
-  const logo = document.querySelector("#sidebar-logo");
-  if (logo) {
-    logo.addEventListener("click", () => {
-      window.setActiveTab(null);
-      levelsView.render();
-    });
-  }
-
-  const homeBtn = document.querySelector("#btn-levels-mobile");
-  if (homeBtn) {
-    homeBtn.addEventListener("click", () => {
-      window.setActiveTab(null);
-      levelsView.render();
-    });
-  }
-
-  document.getElementById("user-avatar")?.addEventListener("click", () => {
-    const src = document.getElementById("user-avatar").src;
-    showAvatarFullscreen(src);
+window.setActiveTab = (tab) => {
+  document.querySelectorAll("[data-tab]").forEach((btn) => {
+    btn.classList.remove("lexis-nav-btn-active");
   });
-  document
-    .getElementById("user-avatar-mobile")
-    ?.addEventListener("click", () => {
-      const src = document.getElementById("user-avatar-mobile").src;
-      showAvatarFullscreen(src);
+  if (tab) {
+    document.querySelectorAll(`[data-tab="${tab}"]`).forEach((btn) => {
+      btn.classList.add("lexis-nav-btn-active");
     });
+  }
+};
 
-  mainContainer.addEventListener("worksheet:cancel", () => {
+refreshSidebar();
+
+const mainContainer = document.querySelector("#main-container");
+window.mainContainer = mainContainer;
+
+const levelsView = new LevelsView(sessionModel);
+const pdfView = new PdfView(sessionModel);
+const shopView = new ShopView(sessionModel);
+const settingsView = new SettingsView(sessionModel);
+const adminView = new AdminView(sessionModel);
+levelsView.render();
+
+const logo = document.querySelector("#sidebar-logo");
+if (logo) {
+  logo.addEventListener("click", () => {
     window.setActiveTab(null);
-    refreshSidebar();
     levelsView.render();
   });
+}
 
-  mainContainer.addEventListener("avatar:updated", () => {
+const homeBtn = document.querySelector("#btn-levels-mobile");
+if (homeBtn) {
+  homeBtn.addEventListener("click", () => {
+    window.setActiveTab(null);
+    levelsView.render();
+  });
+}
+
+const logoutBtn = document.querySelector("#btn-logout");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    sessionModel.logout();
+    window.location.href = import.meta.env.BASE_URL + "index.html";
+  });
+}
+
+mainContainer.addEventListener("worksheet:cancel", () => {
+  window.setActiveTab(null);
+  refreshSidebar();
+  levelsView.render();
+});
+
+mainContainer.addEventListener("avatar:updated", () => {
+  refreshSidebar();
+});
+
+const STREAK_MILESTONES = [7, 14, 21, 30, 60, 100];
+document.body.addEventListener("streak:updated", (e) => {
+  refreshSidebar();
+  const { streak, isNewRecord } = e.detail;
+  if (streak > 0 && STREAK_MILESTONES.includes(streak)) {
+    setTimeout(() => celebrate(), 300);
+  }
+});
+
+document.body.addEventListener("level:up", (e) => {
+  const { level, title } = e.detail;
+  showLevelUp(level, title);
+  playLevelUp();
+});
+
+document.addEventListener("click", () => ensureAudioContext(), { once: true });
+
+document.body.addEventListener("user:updated", () => {
+  refreshSidebar();
+});
+
+window.addEventListener("storage", (e) => {
+  if (e.key === "lexis_session" || e.key === "lexis_users") {
     refreshSidebar();
-  });
-
-  const STREAK_MILESTONES = [7, 14, 21, 30, 60, 100];
-  document.body.addEventListener("streak:updated", (e) => {
-    refreshSidebar();
-    const { streak, isNewRecord } = e.detail;
-    if (streak > 0 && STREAK_MILESTONES.includes(streak)) {
-      setTimeout(() => celebrate(), 300);
-    }
-  });
-
-  document.body.addEventListener("level:up", (e) => {
-    const { level, title } = e.detail;
-    showLevelUp(level, title);
-    playLevelUp();
-  });
-
-  document.addEventListener("click", () => ensureAudioContext(), {
-    once: true,
-  });
-})();
+  }
+});

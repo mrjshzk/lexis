@@ -1,64 +1,68 @@
 import { User } from "../user.js";
-import {
-  getUsers,
-  getUser,
-  createUser,
-  updateUser,
-  deleteUser,
-  getSessionUser,
-  setSessionUser,
-} from "../api.js";
 
+const USERS_KEY = "lexis_users";
+const SESSION_KEY = "lexis_session";
 const ADMIN_NAME = "admin";
 const ADMIN_PASSWORD = "lexis123";
 
 export class SessionModel {
-  async initSession() {
-    const user = await getSessionUser();
-    if (!user) await this.startAnonymousSession();
+  #getUsers() {
+    return JSON.parse(localStorage.getItem(USERS_KEY) ?? "[]");
   }
 
-  async startAnonymousSession() {
+  #saveUsers(users) {
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  }
+
+  #saveSession(user) {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+  }
+
+  initSession() {
+    if (!localStorage.getItem(SESSION_KEY)) this.startAnonymousSession();
+  }
+
+  startAnonymousSession() {
     const guest = new User({ id: crypto.randomUUID(), isAnonymous: true });
-    const created = await createUser(guest);
-    await setSessionUser(created);
-    return created;
+    this.#saveSession(guest);
+    return guest;
   }
 
-  async getSession() {
-    return await getSessionUser();
+  getSession() {
+    return JSON.parse(localStorage.getItem(SESSION_KEY));
   }
 
-  async logout() {
-    await this.startAnonymousSession();
+  logout() {
+    this.startAnonymousSession();
   }
 
-  async login(identifier, password) {
+  login(identifier, password) {
     if (!identifier || !password)
       return { ok: false, error: "Fill in all fields." };
     if (identifier === ADMIN_NAME && password === ADMIN_PASSWORD) {
-      const adminUser = await getUser("admin");
-      if (adminUser) {
-        adminUser.isAdmin = true;
-        await setSessionUser(adminUser);
-        return { ok: true, user: adminUser };
-      }
+      const adminUser = new User({ id: "admin", name: ADMIN_NAME, isAnonymous: false });
+      adminUser.isAdmin = true;
+      adminUser.xp = 99999;
+      adminUser.coins = 99999;
+      adminUser.level = Math.floor(adminUser.xp / 200) + 1;
+      adminUser.currentTitle = "Legend";
+      this.#saveSession(adminUser);
+      return { ok: true, user: adminUser };
     }
-    const users = await getUsers();
-    const user = users.find(
+    const user = this.#getUsers().find(
       (u) =>
         (u.email === identifier || u.name === identifier) &&
         u.password === password,
     );
     if (!user) return { ok: false, error: "Invalid email or password." };
-    await setSessionUser(user);
+    this.#saveSession(user);
     return { ok: true, user };
   }
 
-  async createAccount({ name, email, password }) {
+  createAccount({ name, email, password }) {
     if (!name || !email || !password)
       return { ok: false, error: "Fill in all fields." };
-    const users = await getUsers();
+    const users = this.#getUsers();
     if (users.find((u) => u.email === email))
       return { ok: false, error: "Email already in use." };
     const newUser = new User({
@@ -67,24 +71,20 @@ export class SessionModel {
       email,
       password,
     });
-    const created = await createUser(newUser);
-    await setSessionUser(created);
-    return { ok: true, user: created };
+    users.push(newUser);
+    this.#saveUsers(users);
+    this.#saveSession(newUser);
+    return { ok: true, user: newUser };
   }
 
-  async convertGuestToAccount({ name, email, password }) {
+  convertGuestToAccount({ name, email, password }) {
     if (!name || !email || !password)
       return { ok: false, error: "Fill in all fields." };
-    const users = await getUsers();
-    if (users.find((u) => u.email === email))
+    const users = this.#getUsers();
+    if (users.find(u => u.email === email))
       return { ok: false, error: "Email already in use." };
-    const guest = await this.getSession();
-    const newUser = new User({
-      id: crypto.randomUUID(),
-      name,
-      email,
-      password,
-    });
+    const guest = this.getSession();
+    const newUser = new User({ id: crypto.randomUUID(), name, email, password });
     if (guest) {
       newUser.xp = guest.xp || 0;
       newUser.coins = guest.coins || 0;
@@ -99,67 +99,73 @@ export class SessionModel {
       newUser.purchasedStoreItems = guest.purchasedStoreItems || [];
       newUser.theme = guest.theme || "light";
       newUser.adaptText = guest.adaptText;
-      if (guest?.isAnonymous) {
-        await deleteUser(guest.id);
-      }
     }
-    const created = await createUser(newUser);
-    await setSessionUser(created);
-    return { ok: true, user: created };
+    users.push(newUser);
+    this.#saveUsers(users);
+    this.#saveSession(newUser);
+    return { ok: true, user: newUser };
   }
 
-  async getAllUsers() {
-    return await getUsers();
+  getAllUsers() {
+    return this.#getUsers();
   }
 
-  async deleteUser(userId) {
-    await deleteUser(userId);
+  deleteUser(userId) {
+    const users = this.#getUsers();
+    const filtered = users.filter(u => u.id !== userId);
+    if (filtered.length < users.length) {
+      this.#saveUsers(filtered);
+      return true;
+    }
+    return false;
   }
 
-  async updateUserStat(userId, field, value) {
-    const user = await getUser(userId);
+  updateUserStat(userId, field, value) {
+    const users = this.#getUsers();
+    const user = users.find(u => u.id === userId);
     if (!user) return false;
     user[field] = parseInt(value) || 0;
     if (field === "xp") {
       user.level = Math.floor(user.xp / 200) + 1;
-      const titles = [
-        "",
-        "Explorer",
-        "Adventurer",
-        "Scholar",
-        "Wizard",
-        "Master",
-        "Legend",
-      ];
-      user.currentTitle =
-        titles[Math.min(user.level, titles.length - 1)] || "Legend";
+      const titles = ["", "Explorer", "Adventurer", "Scholar", "Wizard", "Master", "Legend"];
+      user.currentTitle = titles[Math.min(user.level, titles.length - 1)] || "Legend";
     }
-    await updateUser(userId, user);
+    this.#saveUsers(users);
+    const session = this.getSession();
+    if (session && session.id === userId) {
+      session[field] = user[field];
+      if (field === "xp") {
+        session.level = user.level;
+        session.currentTitle = user.currentTitle;
+      }
+      this.#saveSession(session);
+    }
+    document.body.dispatchEvent(new CustomEvent("user:updated"));
     return true;
   }
 
-  async updateUser(user) {
-    await setSessionUser(user);
+  updateUser(user) {
+    this.#saveSession(user);
     if (!user.isAnonymous) {
-      try {
-        await updateUser(user.id, user);
-      } catch {
-        await createUser(user);
+      const users = this.#getUsers();
+      const index = users.findIndex((u) => u.id === user.id);
+      if (index !== -1) {
+        users[index] = user;
+        this.#saveUsers(users);
       }
     }
+    document.body.dispatchEvent(new CustomEvent("user:updated"));
   }
 
-  async recordDailyActivity() {
-    const user = await this.getSession();
+  recordDailyActivity() {
+    const user = this.getSession();
     if (!user) return false;
 
     const today = new Date().toISOString().slice(0, 10);
 
     if (user.lastActiveDate === today) return false;
 
-    const yesterday = new Date(Date.now() - 86400000)
-      .toISOString()
-      .slice(0, 10);
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
     let isNewRecord = false;
 
     if (user.lastActiveDate === yesterday) {
@@ -173,12 +179,8 @@ export class SessionModel {
     }
 
     user.lastActiveDate = today;
-    await this.updateUser(user);
+    this.updateUser(user);
 
-    return {
-      streak: user.streak,
-      isNewRecord,
-      isMilestone: user.streak > 0 && user.streak % 7 === 0,
-    };
+    return { streak: user.streak, isNewRecord, isMilestone: user.streak > 0 && user.streak % 7 === 0 };
   }
 }
