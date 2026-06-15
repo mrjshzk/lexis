@@ -2,8 +2,8 @@ import { User } from "../user.js";
 
 const USERS_KEY = "lexis_users";
 const SESSION_KEY = "lexis_session";
-const ADMIN_NAME = "admin";
-const ADMIN_PASSWORD = "lexis123";
+const ADMIN_NAME = import.meta.env.VITE_ADMIN_NAME ?? null;
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD ?? null;
 
 export class SessionModel {
   async #hashPassword(password) {
@@ -63,7 +63,10 @@ export class SessionModel {
   async login(identifier, password) {
     if (!identifier || !password)
       return { ok: false, error: "Fill in all fields." };
-    if (identifier === ADMIN_NAME && password === ADMIN_PASSWORD) {
+    const adminExists = ADMIN_NAME && ADMIN_PASSWORD;
+    const credentialsMatch = identifier === ADMIN_NAME && password === ADMIN_PASSWORD;
+    const isAdminLogin = adminExists && credentialsMatch;
+    if (isAdminLogin) {
       const adminUser = new User({ id: "admin", name: ADMIN_NAME, isAnonymous: false });
       adminUser.isAdmin = true;
       adminUser.xp = 99999;
