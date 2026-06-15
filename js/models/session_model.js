@@ -6,6 +6,21 @@ const ADMIN_NAME = "admin";
 const ADMIN_PASSWORD = "lexis123";
 
 export class SessionModel {
+  async #hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hash = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(hash))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+  }
+
+  #sanitizeUser(user) {
+    if (!user) return user;
+    const { password, ...clean } = user;
+    return clean;
+  }
+
   #getUsers() {
     return JSON.parse(localStorage.getItem(USERS_KEY) ?? "[]");
   }
@@ -15,11 +30,20 @@ export class SessionModel {
   }
 
   #saveSession(user) {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+    localStorage.setItem(SESSION_KEY, JSON.stringify(this.#sanitizeUser(user)));
   }
 
   initSession() {
-    if (!localStorage.getItem(SESSION_KEY)) this.startAnonymousSession();
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) {
+      this.startAnonymousSession();
+      return;
+    }
+    const parsed = JSON.parse(raw);
+    if (parsed.password) {
+      delete parsed.password;
+      localStorage.setItem(SESSION_KEY, JSON.stringify(parsed));
+    }
   }
 
   startAnonymousSession() {
@@ -29,14 +53,14 @@ export class SessionModel {
   }
 
   getSession() {
-    return JSON.parse(localStorage.getItem(SESSION_KEY));
+    return this.#sanitizeUser(JSON.parse(localStorage.getItem(SESSION_KEY)));
   }
 
   logout() {
     this.startAnonymousSession();
   }
 
-  login(identifier, password) {
+  async login(identifier, password) {
     if (!identifier || !password)
       return { ok: false, error: "Fill in all fields." };
     if (identifier === ADMIN_NAME && password === ADMIN_PASSWORD) {
@@ -47,44 +71,58 @@ export class SessionModel {
       adminUser.level = Math.floor(adminUser.xp / 200) + 1;
       adminUser.currentTitle = "Legend";
       this.#saveSession(adminUser);
-      return { ok: true, user: adminUser };
+      return { ok: true, user: this.#sanitizeUser(adminUser) };
     }
-    const user = this.#getUsers().find(
-      (u) =>
-        (u.email === identifier || u.name === identifier) &&
-        u.password === password,
+
+    const users = this.#getUsers();
+    const user = users.find(
+      (u) => u.email === identifier || u.name === identifier,
     );
     if (!user) return { ok: false, error: "Invalid email or password." };
+
+    const inputHash = await this.#hashPassword(password);
+
+    if (user.password !== inputHash && user.password !== password) {
+      return { ok: false, error: "Invalid email or password." };
+    }
+
+    if (user.password === password) {
+      user.password = inputHash;
+      this.#saveUsers(users);
+    }
+
     this.#saveSession(user);
-    return { ok: true, user };
+    return { ok: true, user: this.#sanitizeUser(user) };
   }
 
-  createAccount({ name, email, password }) {
+  async createAccount({ name, email, password }) {
     if (!name || !email || !password)
       return { ok: false, error: "Fill in all fields." };
     const users = this.#getUsers();
     if (users.find((u) => u.email === email))
       return { ok: false, error: "Email already in use." };
+    const hashedPassword = await this.#hashPassword(password);
     const newUser = new User({
       id: crypto.randomUUID(),
       name,
       email,
-      password,
+      password: hashedPassword,
     });
     users.push(newUser);
     this.#saveUsers(users);
     this.#saveSession(newUser);
-    return { ok: true, user: newUser };
+    return { ok: true, user: this.#sanitizeUser(newUser) };
   }
 
-  convertGuestToAccount({ name, email, password }) {
+  async convertGuestToAccount({ name, email, password }) {
     if (!name || !email || !password)
       return { ok: false, error: "Fill in all fields." };
     const users = this.#getUsers();
     if (users.find(u => u.email === email))
       return { ok: false, error: "Email already in use." };
     const guest = this.getSession();
-    const newUser = new User({ id: crypto.randomUUID(), name, email, password });
+    const hashedPassword = await this.#hashPassword(password);
+    const newUser = new User({ id: crypto.randomUUID(), name, email, password: hashedPassword });
     if (guest) {
       newUser.xp = guest.xp || 0;
       newUser.coins = guest.coins || 0;
@@ -103,7 +141,7 @@ export class SessionModel {
     users.push(newUser);
     this.#saveUsers(users);
     this.#saveSession(newUser);
-    return { ok: true, user: newUser };
+    return { ok: true, user: this.#sanitizeUser(newUser) };
   }
 
   getAllUsers() {
@@ -150,7 +188,9 @@ export class SessionModel {
       const users = this.#getUsers();
       const index = users.findIndex((u) => u.id === user.id);
       if (index !== -1) {
-        users[index] = user;
+        const merged = { ...user };
+        if (!merged.password) merged.password = users[index].password;
+        users[index] = merged;
         this.#saveUsers(users);
       }
     }

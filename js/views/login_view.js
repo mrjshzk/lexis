@@ -19,36 +19,15 @@ export class LoginView {
           </form>
         </div>
       </div>`;
-    document.getElementById("return-btn").onclick = () => {
-      main.innerHTML = this.#savedHtml;
-      main.dispatchEvent(new CustomEvent("index:render"));
-    };
-    document.getElementById("login-form").onsubmit = (e) => {
+    document.getElementById("return-btn").onclick = () => { main.innerHTML = this.#savedHtml; main.dispatchEvent(new CustomEvent("index:render")); };
+    document.getElementById("login-form").onsubmit = async (e) => {
       e.preventDefault();
-      this.#sessionModel
-        .login(
-          document.getElementById("login-identifier").value,
-          document.getElementById("login-password").value,
-        )
-        .then((r) => {
-          if (!r.ok) {
-            const err = document.getElementById("login-error");
-            err.textContent = r.error;
-            err.style.display = "block";
-          } else
-            window.location.href =
-              import.meta.env.BASE_URL + "html/dashboard.html";
-        });
+      const r = await this.#sessionModel.login(document.getElementById("login-identifier").value, document.getElementById("login-password").value);
+      if (!r.ok) { const err = document.getElementById("login-error"); err.textContent = r.error; err.style.display = "block"; }
+      else window.location.href = import.meta.env.BASE_URL + "html/dashboard.html";
     };
   };
 
-  attachTrigger() {
-    document
-      .querySelectorAll("[data-trigger='login']")
-      .forEach((el) => el.addEventListener("click", this.#render));
-  }
-  constructor(sessionModel) {
-    this.#sessionModel = sessionModel;
-    this.attachTrigger();
-  }
+  attachTrigger() { document.querySelectorAll("[data-trigger='login']").forEach(el => el.addEventListener("click", this.#render)); }
+  constructor(sessionModel) { this.#sessionModel = sessionModel; this.attachTrigger(); }
 }

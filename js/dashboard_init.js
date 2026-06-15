@@ -13,6 +13,7 @@ import { AdminView } from "./views/admin_view.js";
 import { onThemeChange, assetUrl } from "./theme.js";
 
 const sessionModel = new SessionModel();
+sessionModel.initSession();
 const session = sessionModel.getSession();
 
 const savedTheme = (session && session.theme) || "light";
