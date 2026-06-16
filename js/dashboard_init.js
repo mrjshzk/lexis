@@ -4,6 +4,7 @@ import { ensureAudioContext, playLevelUp } from "./sound.js";
 import { createAvatar } from "@dicebear/core";
 import { bigSmile } from "@dicebear/collection";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap";
 import { LevelsView } from "./views/levels_view.js";
 import { PdfView } from "./views/pdf_view.js";
@@ -11,6 +12,17 @@ import { ShopView } from "./views/shop_view.js";
 import { SettingsView } from "./views/settings_view.js";
 import { AdminView } from "./views/admin_view.js";
 import { onThemeChange, assetUrl } from "./theme.js";
+
+window.togglePasswordVisibility = (inputId, btn) => {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const isHidden = input.type === "password";
+  input.type = isHidden ? "text" : "password";
+  const icon = btn.querySelector("i");
+  if (icon) {
+    icon.className = isHidden ? "bi bi-eye-slash" : "bi bi-eye";
+  }
+};
 
 const sessionModel = new SessionModel();
 sessionModel.initSession();

@@ -58,7 +58,7 @@ export class LevelsView {
             <form id="guest-signup-form">
               <div class="mb-3"><label class="form-label mb-1">Username</label><input type="text" id="guest-signup-name" class="form-control rounded-4 py-2" required /></div>
               <div class="mb-3"><label class="form-label mb-1">Email</label><input type="email" id="guest-signup-email" class="form-control rounded-4 py-2" required /></div>
-              <div class="mb-4"><label class="form-label mb-1">Password</label><input type="password" id="guest-signup-password" class="form-control rounded-4 py-2" required /></div>
+              <div class="mb-4"><label class="form-label mb-1">Password</label><div class="position-relative"><input type="password" id="guest-signup-password" class="form-control rounded-4 py-2 pe-5" required /><button type="button" class="btn p-0 position-absolute end-0 top-50 translate-middle-y me-3 border-0 bg-transparent" style="z-index:5;line-height:1;font-size:1.2rem;" onclick="togglePasswordVisibility('guest-signup-password',this)"><i class="bi bi-eye"></i></button></div></div>
               <p id="guest-signup-error" class="alert alert-danger py-2" style="display: none;"></p>
               <button type="submit" class="btn w-100 rounded-4 py-2 text-white lexis-btn-primary">Create Account</button>
             </form>

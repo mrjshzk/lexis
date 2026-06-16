@@ -2,8 +2,20 @@ import { LoginView } from "./views/login_view.js";
 import { CreateAccountView } from "./views/create_account_view.js";
 import { SessionModel } from "./models/session_model.js";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap";
 import { onThemeChange, setTheme, getTheme, assetUrl } from "./theme.js";
+
+window.togglePasswordVisibility = (inputId, btn) => {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const isHidden = input.type === "password";
+  input.type = isHidden ? "text" : "password";
+  const icon = btn.querySelector("i");
+  if (icon) {
+    icon.className = isHidden ? "bi bi-eye-slash" : "bi bi-eye";
+  }
+};
 
 const sessionModel = new SessionModel();
 

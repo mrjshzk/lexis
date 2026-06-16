@@ -13,7 +13,7 @@ export class CreateAccountView {
           <form id="create-account-form">
             <div class="mb-3"><label for="ca-name" class="form-label mb-1">Username</label><input type="text" id="ca-name" class="form-control rounded-4 py-2" required /></div>
             <div class="mb-3"><label for="ca-email" class="form-label mb-1">Email</label><input type="email" id="ca-email" class="form-control rounded-4 py-2" required /></div>
-            <div class="mb-4"><label for="ca-password" class="form-label mb-1">Password</label><input type="password" id="ca-password" class="form-control rounded-4 py-2" required /></div>
+            <div class="mb-4"><label for="ca-password" class="form-label mb-1">Password</label><div class="position-relative"><input type="password" id="ca-password" class="form-control rounded-4 py-2 pe-5" required /><button type="button" class="btn p-0 position-absolute end-0 top-50 translate-middle-y me-3 border-0 bg-transparent" style="z-index:5;line-height:1;font-size:1.2rem;" onclick="togglePasswordVisibility('ca-password',this)"><i class="bi bi-eye"></i></button></div></div>
             <p id="ca-error" class="alert alert-danger py-2" style="display: none;"></p>
             <button type="submit" class="btn w-100 rounded-4 py-2 mb-2 text-white lexis-btn-primary fw-medium">Confirm</button>
             <button type="button" id="ca-skip" class="btn w-100 rounded-4 py-2 mb-2 lexis-btn-undo fw-medium">Continue without an account</button>

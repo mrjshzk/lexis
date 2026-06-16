@@ -58,8 +58,11 @@ export class SettingsView {
             </div>
             <div class="mb-4">
               <label for="settings-password" class="form-label">Password</label>
-              <input type="password" id="settings-password" class="form-control rounded-4 py-2"
-                value="${user.password || ""}" required />
+              <div class="position-relative">
+                <input type="password" id="settings-password" class="form-control rounded-4 py-2 pe-5"
+                  value="${user.password || ""}" required />
+                <button type="button" class="btn p-0 position-absolute end-0 top-50 translate-middle-y me-3 border-0 bg-transparent" style="z-index:5;line-height:1;font-size:1.2rem;" onclick="togglePasswordVisibility('settings-password',this)"><i class="bi bi-eye"></i></button>
+              </div>
             </div>
             <p id="settings-error" class="alert alert-danger py-2" style="display: none;"></p>
             <button type="submit" class="btn text-white w-100 rounded-4 py-2 lexis-btn-primary">Apply Changes</button>
