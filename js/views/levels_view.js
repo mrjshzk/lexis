@@ -83,7 +83,7 @@ export class LevelsView {
     if (window.setActiveTab) window.setActiveTab(null);
     const user = await this.sessionModel.getSession();
     const isGuest = user?.isAnonymous ?? false;
-    const guestCapped = isGuest && (user?.solvedSheets?.length ?? 0) >= 2;
+    const guestCapped = isGuest && (user?.solvedSheets?.length ?? 0) >= 1;
     const progress = await this._getProgress();
     const mc = document.querySelector("#main-container");
     const isNormal = this.currentMode === "normal";
