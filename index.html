@@ -13,7 +13,6 @@
     />
     <script defer type="module" src="js/init.js"></script>
     <script defer type="module" src="js/demo_init.js"></script>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
@@ -89,10 +88,13 @@
       <section class="lexis-landing-hero">
         <div class="container hero-wrapper">
           <div id="hero-text" class="hero-text">
-            <h1 class="display-3 fw-bold lexis-landing-hero-title">Lexis</h1>
+            <h1 class="display-3 fw-bold lexis-landing-hero-title">
+              Learn at your own pace
+            </h1>
             <p class="fs-4 text-secondary mb-4">
-              An application for young people that suffer from dyslexia to
-              improve their reading, writing and comprehension.
+              Interactive exercises designed for dyslexic learners. Improve your
+              reading, spelling, and comprehension through game-like challenges
+              that adapt to your rhythm.
             </p>
             <div class="d-flex gap-2 flex-wrap">
               <button
@@ -179,7 +181,15 @@
           <div class="row g-4 text-center">
             <div class="col-6 col-lg-3">
               <div class="lexis-landing-card h-100">
-                <div class="display-5 mb-2">🔥</div>
+                <div class="display-5 mb-2">
+                  <img
+                    id="streak-image"
+                    src="assets/img/Fire.svg"
+                    class="img-fluid"
+                    style="max-height: 50px"
+                    alt="Streak"
+                  />
+                </div>
                 <h6 class="fw-semibold">Daily Streaks</h6>
                 <p class="text-secondary small mb-0">
                   Keep coming back to build your streak.
@@ -188,7 +198,15 @@
             </div>
             <div class="col-6 col-lg-3">
               <div class="lexis-landing-card h-100">
-                <div class="display-5 mb-2">⭐</div>
+                <div class="display-5 mb-2">
+                  <img
+                    id="star-image"
+                    src="assets/img/Star.svg"
+                    class="img-fluid"
+                    style="max-height: 50px"
+                    alt="Star"
+                  />
+                </div>
                 <h6 class="fw-semibold">Level System</h6>
                 <p class="text-secondary small mb-0">
                   Earn XP and unlock new titles.
@@ -197,7 +215,15 @@
             </div>
             <div class="col-6 col-lg-3">
               <div class="lexis-landing-card h-100">
-                <div class="display-5 mb-2">🪙</div>
+                <div class="display-5 mb-2">
+                  <img
+                    id="coin-image"
+                    src="assets/img/Coin.svg"
+                    class="img-fluid"
+                    style="max-height: 50px"
+                    alt="coin"
+                  />
+                </div>
                 <h6 class="fw-semibold">In-game Coins</h6>
                 <p class="text-secondary small mb-0">
                   Earn coins in Hard mode, spend in the store.
@@ -206,7 +232,15 @@
             </div>
             <div class="col-6 col-lg-3">
               <div class="lexis-landing-card h-100">
-                <div class="display-5 mb-2">🎨</div>
+                <div class="display-5 mb-2">
+                  <img
+                    id="palete-image"
+                    src="assets/img/Palete.svg"
+                    class="img-fluid"
+                    style="max-height: 50px"
+                    alt="Palete"
+                  />
+                </div>
                 <h6 class="fw-semibold">Avatar Customization</h6>
                 <p class="text-secondary small mb-0">
                   Unlock accessories and styles for your avatar.
@@ -240,12 +274,7 @@
 
     <div id="teaser-overlay" class="teaser-overlay d-none">
       <button class="teaser-overlay-close">&times;</button>
-      <video
-        id="teaser-overlay-video"
-        class="teaser-overlay-video"
-        controls
-        src="assets/teaser.mp4"
-      ></video>
+      <video id="teaser-overlay-video" class="teaser-overlay-video" controls src="assets/teaser.mp4"></video>
     </div>
   </body>
 </html>
