@@ -56,6 +56,7 @@ export class AdminView {
 
     mc.querySelectorAll(".admin-editable").forEach((span) => {
       span.addEventListener("click", () => {
+        // não duplicar o input
         if (span.querySelector("input")) return;
         const val = span.textContent;
         span.innerHTML = `<input type="number" class="form-control form-control-sm d-inline-block" style="width:5rem" value="${val}" />`;

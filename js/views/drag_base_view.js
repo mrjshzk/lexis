@@ -22,7 +22,7 @@ export default class DragBaseView {
 
   _onPointerDown(e) {
     const el = e.currentTarget;
-    const rect = el.getBoundingClientRect();
+    const rect = el.getBoundingClientRect(); // retorna rect com tamanho e posição do elemento relativo à viewport
     const clone = el.cloneNode(true);
     clone.classList.add("lexis-drag-clone");
     clone.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;height:${rect.height}px;margin:0;pointer-events:none;z-index:9999;transition:none;box-shadow:0 8px 24px rgba(0,0,0,0.15);transform:scale(1.08);white-space:nowrap;`;
