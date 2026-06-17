@@ -43,6 +43,7 @@ export function playCorrect() {
 }
 
 export function playIncorrect() {
+  if (isMuted()) return;
   playTone(200, 0.3, "triangle", 0.15);
 }
 

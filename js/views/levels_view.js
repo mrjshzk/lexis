@@ -128,9 +128,8 @@ export class LevelsView {
 
     mc.innerHTML = `
       <div class="d-flex flex-column align-items-center justify-content-center h-100 py-4">
-        ${
-          !isGuest
-            ? `
+        ${!isGuest
+        ? `
         <div class="mb-4">
           <select id="mode-select" class="form-select d-inline-block text-white border-0 rounded-4 px-4 py-2 lexis-mode-select">
             <option value="normal" ${isNormal ? "selected" : ""}>Normal Mode</option>
@@ -138,12 +137,11 @@ export class LevelsView {
           </select>
         </div>
         `
-            : ""
-        }
+        : ""
+      }
 
-        ${
-          isNormal
-            ? `
+        ${isNormal
+        ? `
         <div class="position-relative flex-grow-1 d-flex align-items-center justify-content-center">
           ${progress === 0 ? '<div class="alert lexis-prompt-bar rounded-4 px-4 py-3 text-center position-absolute" style="top:0;z-index:2;font-size:0.95rem;">Complete worksheets to unlock levels along the path!</div>' : ""}
           <div class="position-relative lexis-path" id="path-container">
@@ -155,7 +153,7 @@ export class LevelsView {
           </div>
         </div>
         `
-            : `
+        : `
         <div class="flex-grow-1 d-flex flex-column align-items-center justify-content-center gap-2">
           <h2 class="fw-normal lexis-text-p">Hard Mode</h2>
           <p class="text-secondary">Earn <span class="lexis-text-orange">${HardcoreWorksheetModel.COIN_REWARD} coin</span> per correct answer</p>
@@ -163,7 +161,7 @@ export class LevelsView {
           <p class="small text-secondary">One mistake and it's over</p>
         </div>
         `
-        }
+      }
 
         <div class="mt-3 mb-4">
           <button id="start-btn" class="btn text-white rounded-3 px-5 py-2 lexis-btn-start">Start</button>
@@ -250,10 +248,11 @@ export class LevelsView {
       mode === "hardcore"
         ? new HardcoreWorksheetModel(this.sessionModel)
         : new WorksheetModel(
-            generateExercises(5),
-            `worksheet-${Date.now()}`,
-            this.sessionModel,
-          );
+          generateExercises(5),
+          `worksheet-${Date.now()}`,
+          this.sessionModel,
+        );
     new WorksheetView(model).render();
   }
 }
+

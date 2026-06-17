@@ -301,6 +301,24 @@ body {
 	max-width: 720px;
 }
 
+@media (min-width: 992px) {
+	.lexis-card-wide {
+		max-width: 960px;
+	}
+}
+
+@media (min-width: 1200px) {
+	.lexis-card-wide {
+		max-width: 1140px;
+	}
+}
+
+@media (min-width: 1400px) {
+	.lexis-card-wide {
+		max-width: 1320px;
+	}
+}
+
 .lexis-prompt-bar {
 	background-color: var(--lexis-bg-card);
 	color: var(--lexis-text-primary);
@@ -957,4 +975,19 @@ body {
 
 .lexis-hint-toggle:hover {
 	color: var(--lexis-primary);
+}
+
+/* Drop zone for PDF upload */
+.border-dashed {
+	border-style: dashed !important;
+}
+
+.lexis-drop-zone {
+	background: var(--lexis-surface);
+	border-color: var(--lexis-border);
+}
+
+.lexis-drop-active {
+	background: var(--lexis-primary-bg, rgba(99, 102, 241, 0.08));
+	border-color: var(--lexis-primary) !important;
 }
