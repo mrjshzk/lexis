@@ -64,6 +64,10 @@ export class SettingsView {
             <p id="settings-error" class="alert alert-danger py-2" style="display: none;"></p>
             <button type="submit" class="btn text-white w-100 rounded-4 py-2 lexis-btn-primary">Apply Changes</button>
           </form>
+
+          <button id="settings-logout-btn" class="btn text-white w-100 rounded-4 py-2 lexis-btn-primary mt-4">
+            Logout
+          </button>
         </div>
       </div>`;
 
@@ -123,6 +127,13 @@ export class SettingsView {
           err.style.display = "none";
           err.className = "alert alert-danger py-2";
         }, 2000);
+      });
+
+    mainContainer
+      .querySelector("#settings-logout-btn")
+      .addEventListener("click", async () => {
+        await this.sessionModel.logout();
+        window.location.href = import.meta.env.BASE_URL + "index.html";
       });
   }
 }
