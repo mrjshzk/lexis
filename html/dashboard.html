@@ -165,7 +165,7 @@
         </div>
 
         <div class="d-none d-md-flex flex-column lexis-sidebar-right-desktop">
-          <div class="p-3 flex-grow-1">
+          <div class="p-3 flex-grow-1 lexis-sidebar-right-cards">
             <div class="card border-0 shadow-sm rounded-4 mb-3 text-center">
               <div class="card-body p-3">
                 <h5 class="fw-bold mb-2 lexis-text-p" id="user-name">Guest</h5>
@@ -245,20 +245,14 @@
             </div>
             <div class="card border-0 shadow-sm rounded-4 mb-3">
               <div class="card-body p-3 text-center">
-                <div style="font-size: 1.8rem;" id="streak-flame">🔥</div>
+                <div style="font-size: 1.8rem" id="streak-flame">🔥</div>
                 <div class="fw-bold lexis-text-p" id="streak-count">0</div>
                 <div class="small text-secondary">day streak</div>
-                <div class="small text-secondary mt-1">Best: <span id="streak-best">0</span></div>
+                <div class="small text-secondary mt-1">
+                  Best: <span id="streak-best">0</span>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="p-3">
-            <button
-              id="btn-logout"
-              class="btn w-100 rounded-3 text-white py-2 lexis-btn-logout"
-            >
-              Log Out
-            </button>
           </div>
         </div>
       </aside>

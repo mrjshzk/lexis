@@ -108,6 +108,11 @@ body {
 	height: 100vh;
 }
 
+.lexis-sidebar-right-cards {
+	overflow-y: auto;
+	min-height: 0;
+}
+
 .lexis-safe-bottom {
 	padding-bottom: env(safe-area-inset-bottom);
 }
@@ -212,12 +217,6 @@ body {
 	border-radius: 1rem !important;
 }
 
-.lexis-btn-logout {
-	background-color: var(--lexis-primary) !important;
-	border: none !important;
-	color: white !important;
-	border-radius: 0.75rem !important;
-}
 
 /* Text */
 .lexis-text-p {

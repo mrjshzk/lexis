@@ -174,14 +174,6 @@ async function refreshSidebar() {
     });
   }
 
-  const logoutBtn = document.querySelector("#btn-logout");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-      await sessionModel.logout();
-      window.location.href = import.meta.env.BASE_URL + "index.html";
-    });
-  }
-
   document.getElementById("user-avatar")?.addEventListener("click", () => {
     const src = document.getElementById("user-avatar").src;
     showAvatarFullscreen(src);
