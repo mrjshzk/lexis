@@ -10,7 +10,7 @@ export class SettingsView {
 
   async render() {
     if (window.setActiveTab) window.setActiveTab("settings");
-    const user = await this.sessionModel.getSession() || {};
+    const user = (await this.sessionModel.getSession()) || {};
     const currentTheme = user.theme || "light";
     const adaptText = user.adaptText || false;
     const soundMuted = isMuted();
@@ -89,33 +89,40 @@ export class SettingsView {
       document.documentElement.setAttribute("data-bs-theme", theme);
     });
 
-    mainContainer.querySelector("#settings-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const newName = mainContainer.querySelector("#settings-username").value.trim();
-      const newEmail = mainContainer.querySelector("#settings-email").value.trim();
-      const newPassword = mainContainer.querySelector("#settings-password").value;
+    mainContainer
+      .querySelector("#settings-form")
+      .addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const newName = mainContainer
+          .querySelector("#settings-username")
+          .value.trim();
+        const newEmail = mainContainer
+          .querySelector("#settings-email")
+          .value.trim();
+        const newPassword =
+          mainContainer.querySelector("#settings-password").value;
 
-      if (!newName || !newEmail || !newPassword) {
+        if (!newName || !newEmail || !newPassword) {
+          const err = mainContainer.querySelector("#settings-error");
+          err.textContent = "Fill in all fields.";
+          err.style.display = "block";
+          return;
+        }
+
+        user.name = newName;
+        user.email = newEmail;
+        user.password = newPassword;
+        await this.sessionModel.updateUser(user);
+        mainContainer.dispatchEvent(new CustomEvent("avatar:updated"));
+
         const err = mainContainer.querySelector("#settings-error");
-        err.textContent = "Fill in all fields.";
+        err.className = "alert alert-success py-2";
+        err.textContent = "Changes applied successfully.";
         err.style.display = "block";
-        return;
-      }
-
-      user.name = newName;
-      user.email = newEmail;
-      user.password = newPassword;
-      await this.sessionModel.updateUser(user);
-      mainContainer.dispatchEvent(new CustomEvent("avatar:updated"));
-
-      const err = mainContainer.querySelector("#settings-error");
-      err.className = "alert alert-success py-2";
-      err.textContent = "Changes applied successfully.";
-      err.style.display = "block";
-      setTimeout(() => {
-        err.style.display = "none";
-        err.className = "alert alert-danger py-2";
-      }, 2000);
-    });
+        setTimeout(() => {
+          err.style.display = "none";
+          err.className = "alert alert-danger py-2";
+        }, 2000);
+      });
   }
 }

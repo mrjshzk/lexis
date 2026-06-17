@@ -32,10 +32,12 @@ export default class LetterReversalView {
         </div>
         <div class="lexis-hint-text small text-secondary mb-3 d-none">${this.model.hint || "No hint available"}</div>
         <div class="d-flex justify-content-center flex-wrap gap-2" id="lr-letter-row">
-          ${chars.map((ch, i) => {
-            const isWrong = i === this.model.swappedIndex;
-            return `<button class="btn rounded-3 shadow-sm fw-bold fs-4 d-flex align-items-center justify-content-center lexis-tile ${isWrong ? "lexis-reversal-wrong" : "lexis-reversal-letter"}" data-index="${i}" style="width:3rem;height:3.5rem;">${ch}</button>`;
-          }).join("")}
+          ${chars
+            .map((ch, i) => {
+              const isWrong = i === this.model.swappedIndex;
+              return `<button class="btn rounded-3 shadow-sm fw-bold fs-4 d-flex align-items-center justify-content-center lexis-tile ${isWrong ? "lexis-reversal-wrong" : "lexis-reversal-letter"}" data-index="${i}" style="width:3rem;height:3.5rem;">${ch}</button>`;
+            })
+            .join("")}
         </div>
         <div id="lr-options" class="d-flex justify-content-center flex-wrap gap-2 d-none">
           ${this.model.options.map((o) => `<button class="btn rounded-4 px-4 py-2 shadow-sm lexis-ex-option" data-opt="${o}">${o}</button>`).join("")}
@@ -49,7 +51,10 @@ export default class LetterReversalView {
     c.querySelectorAll("#lr-options button").forEach((btn) =>
       btn.addEventListener("click", this._onOptionClick),
     );
-    c.querySelector(".lexis-tts-btn")?.addEventListener("click", this._readAloud);
+    c.querySelector(".lexis-tts-btn")?.addEventListener(
+      "click",
+      this._readAloud,
+    );
 
     const hintToggle = c.querySelector(".lexis-hint-toggle");
     const hintText = c.querySelector(".lexis-hint-text");
@@ -70,7 +75,9 @@ export default class LetterReversalView {
     stop();
     const texts = ["Tap the wrong letter, then pick the correct one"];
     if (this.model.hint) texts.push(this.model.hint);
-    try { await speakSequence(texts); } catch {}
+    try {
+      await speakSequence(texts);
+    } catch {}
     btn.disabled = false;
   }
 
@@ -96,8 +103,12 @@ export default class LetterReversalView {
     const c = this._getContainer();
     if (!c) return;
     const choice = e.currentTarget.getAttribute("data-opt");
-    c.querySelectorAll("#lr-options button").forEach((b) => (b.disabled = true));
-    c.querySelectorAll("#lr-letter-row button").forEach((b) => (b.disabled = true));
+    c.querySelectorAll("#lr-options button").forEach(
+      (b) => (b.disabled = true),
+    );
+    c.querySelectorAll("#lr-letter-row button").forEach(
+      (b) => (b.disabled = true),
+    );
 
     if (this.model.checkAnswer(this._selected, choice)) {
       playCorrect();
@@ -123,14 +134,13 @@ export default class LetterReversalView {
       const correctChars = this.model.word.split("");
       const row = c.querySelector("#lr-letter-row");
       row.innerHTML = correctChars
-        .map(
-          (ch, i) => {
-            let cls = "rounded-3 shadow-sm fw-bold fs-4 d-flex align-items-center justify-content-center lexis-tile";
-            if (i === this.model.swappedIndex) cls += " lexis-flash-correct";
-            else if (i === this._selected) cls += " lexis-flash-incorrect";
-            return `<div class="${cls}" style="width:3rem;height:3.5rem;">${ch}</div>`;
-          },
-        )
+        .map((ch, i) => {
+          let cls =
+            "rounded-3 shadow-sm fw-bold fs-4 d-flex align-items-center justify-content-center lexis-tile";
+          if (i === this.model.swappedIndex) cls += " lexis-flash-correct";
+          else if (i === this._selected) cls += " lexis-flash-incorrect";
+          return `<div class="${cls}" style="width:3rem;height:3.5rem;">${ch}</div>`;
+        })
         .join("");
       c.querySelector("#lr-options").classList.add("d-none");
       setTimeout(() => {

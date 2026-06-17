@@ -19,14 +19,14 @@ export default class MissingLettersModel {
 
   getDisplayWord() {
     // return string with underscores for blanks
-    const chars = this.word.split('');
-    this.blanks.forEach(i => (chars[i] = '_'));
-    return chars.join('');
+    const chars = this.word.split("");
+    this.blanks.forEach((i) => (chars[i] = "_"));
+    return chars.join("");
   }
 
   checkAnswers(inputs) {
-    const correct = this.blanks.every((idx, i) =>
-      inputs[i].toLowerCase() === this.word[idx].toLowerCase()
+    const correct = this.blanks.every(
+      (idx, i) => inputs[i].toLowerCase() === this.word[idx].toLowerCase(),
     );
     this.completed = correct;
     return correct;

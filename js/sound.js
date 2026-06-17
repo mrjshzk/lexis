@@ -3,7 +3,8 @@ const MUTED_KEY = "lexis_sound_muted";
 let audioCtx = null;
 
 function getCtx() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (!audioCtx)
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   return audioCtx;
 }
 

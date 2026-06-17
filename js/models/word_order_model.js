@@ -10,7 +10,7 @@ export default class WordOrderModel {
   }
 
   checkAnswer(selected) {
-    const isCorrect = selected.join(' ') === this.original;
+    const isCorrect = selected.join(" ") === this.original;
     this.completed = isCorrect;
     return isCorrect;
   }

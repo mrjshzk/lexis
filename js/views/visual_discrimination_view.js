@@ -38,7 +38,10 @@ export default class VisualDiscriminationView {
     c.querySelectorAll("button[data-opt]").forEach((b) =>
       b.addEventListener("click", this._onOptionClick),
     );
-    c.querySelector(".lexis-tts-btn")?.addEventListener("click", this._readAloud);
+    c.querySelector(".lexis-tts-btn")?.addEventListener(
+      "click",
+      this._readAloud,
+    );
     const hintToggle = c.querySelector(".lexis-hint-toggle");
     const hintText = c.querySelector(".lexis-hint-text");
     if (hintToggle && hintText && this.model.hint) {
@@ -60,7 +63,9 @@ export default class VisualDiscriminationView {
     if (this.model.hint) texts.push(this.model.hint);
     texts.push(this.model.word);
     texts.push(...this.model.options);
-    try { await speakSequence(texts); } catch {}
+    try {
+      await speakSequence(texts);
+    } catch {}
     btn.disabled = false;
   }
 

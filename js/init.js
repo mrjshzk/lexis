@@ -10,40 +10,67 @@ const sessionModel = new SessionModel();
 (async () => {
   await sessionModel.initSession();
 
-const savedUser = await sessionModel.getSession();
-const savedTheme = (savedUser && savedUser.theme) || "light";
-document.documentElement.setAttribute("data-bs-theme", savedTheme);
+  const savedUser = await sessionModel.getSession();
+  const savedTheme = (savedUser && savedUser.theme) || "light";
+  document.documentElement.setAttribute("data-bs-theme", savedTheme);
 
-function updateNavLogo() {
-  const logo = document.querySelector("#navbar-logo");
-  if (!logo) return;
-  logo.src =
-       getTheme() === "dark"
-         ? assetUrl("assets/img/LogoOrange.png")
-         : assetUrl("assets/img/LogoBlue.png");
-}
+  function updateNavLogo() {
+    const logo = document.querySelector("#navbar-logo");
+    if (!logo) return;
+    logo.src =
+      getTheme() === "dark"
+        ? assetUrl("assets/img/LogoOrange.png")
+        : assetUrl("assets/img/LogoBlue.png");
+  }
 
-function updateThemeIcon() {
+  function updateThemeIcon() {
     document
-        .querySelectorAll(".theme-icon")
-        .forEach((el) => (el.textContent = getTheme() === "dark" ? "🌙" : "☀️"));
-}
+      .querySelectorAll(".theme-icon")
+      .forEach((el) => (el.textContent = getTheme() === "dark" ? "🌙" : "☀️"));
+  }
 
-function syncToggleState() {
-   document
-        .querySelectorAll(".theme-toggle-input")
-        .forEach((el) => (el.checked = getTheme() === "dark"));
-}
+  function syncToggleState() {
+    document
+      .querySelectorAll(".theme-toggle-input")
+      .forEach((el) => (el.checked = getTheme() === "dark"));
+  }
 
-updateNavLogo();
-updateThemeIcon();
-syncToggleState();
+  updateNavLogo();
+  updateThemeIcon();
+  syncToggleState();
 
-onThemeChange(updateNavLogo);
-onThemeChange(updateThemeIcon);
-onThemeChange(syncToggleState);
+  onThemeChange(updateNavLogo);
+  onThemeChange(updateThemeIcon);
+  onThemeChange(syncToggleState);
 
-document.querySelectorAll(".theme-toggle-input").forEach((el) => {
+  const teaserBtn = document.querySelector("#teaser-btn");
+  const teaserOverlay = document.querySelector("#teaser-overlay");
+  const teaserVideo = document.querySelector("#teaser-overlay-video");
+  const teaserClose = document.querySelector(".teaser-overlay-close");
+
+  if (teaserBtn && teaserOverlay && teaserVideo && teaserClose) {
+    teaserBtn.addEventListener("click", () => {
+      teaserOverlay.classList.remove("d-none");
+      teaserVideo.play();
+    });
+
+    function closeTeaser() {
+      teaserOverlay.classList.add("d-none");
+      teaserVideo.pause();
+      teaserVideo.currentTime = 0;
+    }
+
+    teaserClose.addEventListener("click", closeTeaser);
+    teaserOverlay.addEventListener("click", (e) => {
+      if (e.target === teaserOverlay) closeTeaser();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !teaserOverlay.classList.contains("d-none"))
+        closeTeaser();
+    });
+  }
+
+  document.querySelectorAll(".theme-toggle-input").forEach((el) => {
     el.addEventListener("change", async () => {
       setTheme(el.checked ? "dark" : "light");
       const user = await sessionModel.getSession();
@@ -54,8 +81,8 @@ document.querySelectorAll(".theme-toggle-input").forEach((el) => {
     });
   });
 
-const loginView = new LoginView(sessionModel);
-const createAccountView = new CreateAccountView(sessionModel);
+  const loginView = new LoginView(sessionModel);
+  const createAccountView = new CreateAccountView(sessionModel);
 
   document
     .getElementById("main-container")

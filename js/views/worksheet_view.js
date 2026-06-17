@@ -59,7 +59,9 @@ export default class WorksheetView {
         view = new LetterReversalView(new LetterReversalModel(exercise.data));
         break;
       case "visual_discrimination":
-        view = new VisualDiscriminationView(new VisualDiscriminationModel(exercise.data));
+        view = new VisualDiscriminationView(
+          new VisualDiscriminationModel(exercise.data),
+        );
         break;
       default:
         ec.innerHTML =
@@ -161,12 +163,14 @@ export default class WorksheetView {
           <div style="font-size:2.5rem;font-weight:700;margin-bottom:0.5rem;">Game Over!</div>
           <div class="fs-5 mb-2">Correct answers: <strong>${correct}</strong></div>
           <div class="fs-5 mb-2 lexis-text-orange">Coins earned: <strong>${coins}</strong></div>
-          ${isNewBest ? '<div class="fs-6 lexis-text-green mt-2">New personal best!</div>' : ''}
+          ${isNewBest ? '<div class="fs-6 lexis-text-green mt-2">New personal best!</div>' : ""}
           <button id="hardcore-back-btn" class="btn text-white mt-3 rounded-3 px-4 lexis-btn-primary">Back to Levels</button>
         </div>
       </div>`;
-    this.container.querySelector("#hardcore-back-btn").addEventListener("click", () => {
-      this.container.dispatchEvent(new CustomEvent("worksheet:cancel"));
-    });
+    this.container
+      .querySelector("#hardcore-back-btn")
+      .addEventListener("click", () => {
+        this.container.dispatchEvent(new CustomEvent("worksheet:cancel"));
+      });
   }
 }

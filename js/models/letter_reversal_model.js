@@ -1,7 +1,12 @@
 import { shuffle } from "../utils.js";
 
 const REVERSAL_PAIRS = {
-  b: "d", d: "b", p: "q", q: "p", m: "w", w: "m",
+  b: "d",
+  d: "b",
+  p: "q",
+  q: "p",
+  m: "w",
+  w: "m",
 };
 
 export default class LetterReversalModel {
@@ -29,7 +34,8 @@ export default class LetterReversalModel {
         this.wrongLetter = this.wrongLetter.toUpperCase();
       }
     } else {
-      this.swappedIndex = candidates[Math.floor(Math.random() * candidates.length)];
+      this.swappedIndex =
+        candidates[Math.floor(Math.random() * candidates.length)];
       this.correctLetter = this.word[this.swappedIndex];
       const lower = this.correctLetter.toLowerCase();
       const swapped = REVERSAL_PAIRS[lower];
@@ -61,7 +67,8 @@ export default class LetterReversalModel {
   }
 
   checkAnswer(positionIndex, choice) {
-    const isCorrect = positionIndex === this.swappedIndex && choice === this.correctLetter;
+    const isCorrect =
+      positionIndex === this.swappedIndex && choice === this.correctLetter;
     this.completed = isCorrect;
     return isCorrect;
   }

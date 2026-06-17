@@ -1,7 +1,14 @@
 import WorksheetModel from "./worksheet_model.js";
 import { WORDS, SENTENCES } from "../data.js";
 
-const EXERCISE_TYPES = ["spelling", "letter_dnd", "missing", "word_order", "letter_reversal", "visual_discrimination"];
+const EXERCISE_TYPES = [
+  "spelling",
+  "letter_dnd",
+  "missing",
+  "word_order",
+  "letter_reversal",
+  "visual_discrimination",
+];
 
 function randomWord() {
   return WORDS[Math.floor(Math.random() * WORDS.length)];
@@ -12,14 +19,33 @@ function randomSentence() {
 }
 
 function generateExercise() {
-  const type = EXERCISE_TYPES[Math.floor(Math.random() * EXERCISE_TYPES.length)];
+  const type =
+    EXERCISE_TYPES[Math.floor(Math.random() * EXERCISE_TYPES.length)];
   switch (type) {
-    case "spelling": { const w = randomWord(); return { type, data: { word: w.word, hint: w.hint } }; }
-    case "letter_dnd": { const w = randomWord(); return { type, data: { word: w.word, hint: w.hint } }; }
-    case "missing": { const w = randomWord(); return { type, data: { word: w.word, hint: w.hint } }; }
-    case "word_order": { const s = randomSentence(); return { type, data: { sentence: s.sentence, hint: s.hint } }; }
-    case "letter_reversal": { const w = randomWord(); return { type, data: { word: w.word, hint: w.hint } }; }
-    case "visual_discrimination": { const w = randomWord(); return { type, data: { word: w.word, hint: w.hint } }; }
+    case "spelling": {
+      const w = randomWord();
+      return { type, data: { word: w.word, hint: w.hint } };
+    }
+    case "letter_dnd": {
+      const w = randomWord();
+      return { type, data: { word: w.word, hint: w.hint } };
+    }
+    case "missing": {
+      const w = randomWord();
+      return { type, data: { word: w.word, hint: w.hint } };
+    }
+    case "word_order": {
+      const s = randomSentence();
+      return { type, data: { sentence: s.sentence, hint: s.hint } };
+    }
+    case "letter_reversal": {
+      const w = randomWord();
+      return { type, data: { word: w.word, hint: w.hint } };
+    }
+    case "visual_discrimination": {
+      const w = randomWord();
+      return { type, data: { word: w.word, hint: w.hint } };
+    }
   }
 }
 

@@ -37,7 +37,10 @@ export default class WordOrderView extends DragBaseView {
     this._attachDrag(c, "#word-pool .word-chip");
     c.querySelector("#submit-btn").addEventListener("click", this._onSubmit);
     c.querySelector("#hint-btn").addEventListener("click", this._onHintWord);
-    c.querySelector(".lexis-tts-btn")?.addEventListener("click", this._readAloud);
+    c.querySelector(".lexis-tts-btn")?.addEventListener(
+      "click",
+      this._readAloud,
+    );
     const hintToggle = c.querySelector(".lexis-hint-toggle");
     const hintText = c.querySelector(".lexis-hint-text");
     if (hintToggle && hintText && this.model.hint) {
@@ -127,7 +130,9 @@ export default class WordOrderView extends DragBaseView {
     const texts = ["Arrange the words in correct order"];
     if (this.model.hint) texts.push(this.model.hint);
     texts.push(...this.model.shuffled);
-    try { await speakSequence(texts); } catch {}
+    try {
+      await speakSequence(texts);
+    } catch {}
     btn.disabled = false;
   }
 

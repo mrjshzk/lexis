@@ -10,11 +10,14 @@ export default class DragBaseView {
     this._onPointerUp = this._onPointerUp.bind(this);
   }
 
-  _getContainer() { return getExerciseContainer(this); }
+  _getContainer() {
+    return getExerciseContainer(this);
+  }
 
   _attachDrag(container, selector) {
-    container.querySelectorAll(selector).forEach(el =>
-      el.addEventListener("pointerdown", this._onPointerDown));
+    container
+      .querySelectorAll(selector)
+      .forEach((el) => el.addEventListener("pointerdown", this._onPointerDown));
   }
 
   _onPointerDown(e) {
@@ -26,10 +29,12 @@ export default class DragBaseView {
     document.body.appendChild(clone);
     el.classList.add("opacity-25");
     this.dragState = {
-      el, clone,
+      el,
+      clone,
       offsetX: e.clientX - rect.left,
       offsetY: e.clientY - rect.top,
-      startX: e.clientX, startY: e.clientY,
+      startX: e.clientX,
+      startY: e.clientY,
       originalParent: el.parentNode,
       originalRef: el.nextSibling,
       moved: false,
@@ -41,9 +46,13 @@ export default class DragBaseView {
   _onPointerMove(e) {
     if (!this.dragState) return;
     const ds = this.dragState;
-    ds.clone.style.left = (e.clientX - ds.offsetX) + "px";
-    ds.clone.style.top = (e.clientY - ds.offsetY) + "px";
-    if (!ds.moved && (Math.abs(e.clientX - ds.startX) > 5 || Math.abs(e.clientY - ds.startY) > 5))
+    ds.clone.style.left = e.clientX - ds.offsetX + "px";
+    ds.clone.style.top = e.clientY - ds.offsetY + "px";
+    if (
+      !ds.moved &&
+      (Math.abs(e.clientX - ds.startX) > 5 ||
+        Math.abs(e.clientY - ds.startY) > 5)
+    )
       ds.moved = true;
   }
 

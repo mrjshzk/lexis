@@ -1,6 +1,9 @@
 const callbacks = [];
-const observer = new MutationObserver(() => callbacks.forEach(fn => fn()));
-observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-bs-theme"] });
+const observer = new MutationObserver(() => callbacks.forEach((fn) => fn()));
+observer.observe(document.documentElement, {
+  attributes: true,
+  attributeFilter: ["data-bs-theme"],
+});
 
 export function onThemeChange(callback) {
   callbacks.push(callback);

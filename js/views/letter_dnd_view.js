@@ -33,7 +33,10 @@ export default class LetterDndView extends DragBaseView {
       </div>`;
     this._attachDrag(c, "#letter-pool > div");
     c.querySelector("#check-btn").addEventListener("click", this._onCheck);
-    c.querySelector(".lexis-tts-btn")?.addEventListener("click", this._readAloud);
+    c.querySelector(".lexis-tts-btn")?.addEventListener(
+      "click",
+      this._readAloud,
+    );
     const hintToggle = c.querySelector(".lexis-hint-toggle");
     const hintText = c.querySelector(".lexis-hint-text");
     if (hintToggle && hintText && this.model.hint) {
@@ -50,7 +53,8 @@ export default class LetterDndView extends DragBaseView {
   _onDrop(el, e) {
     const c = this._getContainer();
     if (!c) return;
-    const cx = e.clientX, cy = e.clientY;
+    const cx = e.clientX,
+      cy = e.clientY;
     const pool = c.querySelector("#letter-pool");
     const slots = c.querySelectorAll("#construction-zone > div");
     const poolTiles = c.querySelectorAll("#letter-pool > div");
@@ -60,7 +64,10 @@ export default class LetterDndView extends DragBaseView {
       if (cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom) {
         const occ = s.firstElementChild;
         if (occ && occ !== el)
-          this.dragState.originalParent.insertBefore(occ, this.dragState.originalRef);
+          this.dragState.originalParent.insertBefore(
+            occ,
+            this.dragState.originalRef,
+          );
         s.appendChild(el);
         return;
       }
@@ -69,7 +76,10 @@ export default class LetterDndView extends DragBaseView {
       if (o === el) continue;
       const r = o.getBoundingClientRect();
       if (cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom) {
-        const pa = el.parentNode, pb = o.parentNode, ra = el.nextSibling, rb = o.nextSibling;
+        const pa = el.parentNode,
+          pb = o.parentNode,
+          ra = el.nextSibling,
+          rb = o.nextSibling;
         pa.insertBefore(o, ra);
         pb.insertBefore(el, rb);
         return;
@@ -86,7 +96,9 @@ export default class LetterDndView extends DragBaseView {
     stop();
     const texts = ["Arrange the letters"];
     if (this.model.hint) texts.push(this.model.hint);
-    try { await speakSequence(texts); } catch {}
+    try {
+      await speakSequence(texts);
+    } catch {}
     btn.disabled = false;
   }
 

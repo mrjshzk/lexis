@@ -89,7 +89,7 @@ async function refreshSidebar() {
   setText("#user-xp-mobile", user.xp);
   setText("#user-coins-mobile", user.coins);
 
-const xpPct = Math.min(Math.round(((user.xp % 200) / 200) * 100), 100);
+  const xpPct = Math.min(Math.round(((user.xp % 200) / 200) * 100), 100);
   setBar("#daily-xp-bar", xpPct);
   setText("#daily-xp-text", `${xpPct}%`);
 
@@ -102,7 +102,7 @@ const xpPct = Math.min(Math.round(((user.xp % 200) / 200) * 100), 100);
   setText("#streak-count", user.streak);
   setText("#streak-best", user.longestStreak);
 
-document
+  document
     .querySelectorAll(
       "[data-tab='store'], [data-tab='customization'], [data-tab='pdf']",
     )
@@ -131,92 +131,94 @@ document
   updateLogo();
   onThemeChange(updateLogo);
 
-if (session?.adaptText) {
-  document.body.classList.add("dyslexic-mode");
-}
-
-window.setActiveTab = (tab) => {
-  document.querySelectorAll("[data-tab]").forEach((btn) => {
-    btn.classList.remove("lexis-nav-btn-active");
-  });
-  if (tab) {
-    document.querySelectorAll(`[data-tab="${tab}"]`).forEach((btn) => {
-      btn.classList.add("lexis-nav-btn-active");
-    });
+  if (session?.adaptText) {
+    document.body.classList.add("dyslexic-mode");
   }
-};
+
+  window.setActiveTab = (tab) => {
+    document.querySelectorAll("[data-tab]").forEach((btn) => {
+      btn.classList.remove("lexis-nav-btn-active");
+    });
+    if (tab) {
+      document.querySelectorAll(`[data-tab="${tab}"]`).forEach((btn) => {
+        btn.classList.add("lexis-nav-btn-active");
+      });
+    }
+  };
 
   await refreshSidebar();
 
-const mainContainer = document.querySelector("#main-container");
-window.mainContainer = mainContainer;
+  const mainContainer = document.querySelector("#main-container");
+  window.mainContainer = mainContainer;
 
-const levelsView = new LevelsView(sessionModel);
-const pdfView = new PdfView(sessionModel);
-const shopView = new ShopView(sessionModel);
-const settingsView = new SettingsView(sessionModel);
-const adminView = new AdminView(sessionModel);
-await levelsView.render();
+  const levelsView = new LevelsView(sessionModel);
+  const pdfView = new PdfView(sessionModel);
+  const shopView = new ShopView(sessionModel);
+  const settingsView = new SettingsView(sessionModel);
+  const adminView = new AdminView(sessionModel);
+  await levelsView.render();
 
-const logo = document.querySelector("#sidebar-logo");
-if (logo) {
-  logo.addEventListener("click", () => {
-    window.setActiveTab(null);
-    levelsView.render();
-  });
-}
-
-const homeBtn = document.querySelector("#btn-levels-mobile");
-if (homeBtn) {
-  homeBtn.addEventListener("click", () => {
-    window.setActiveTab(null);
-    levelsView.render();
-  });
-}
-
-const logoutBtn = document.querySelector("#btn-logout");
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", async () => {
-      await sessionModel.logout();
-    window.location.href = import.meta.env.BASE_URL + "index.html";
-  });
-}
-
-document.getElementById("user-avatar")?.addEventListener("click", () => {
-  const src = document.getElementById("user-avatar").src;
-  showAvatarFullscreen(src);
-});
-document.getElementById("user-avatar-mobile")?.addEventListener("click", () => {
-  const src = document.getElementById("user-avatar-mobile").src;
-  showAvatarFullscreen(src);
-});
-
-mainContainer.addEventListener("worksheet:cancel", () => {
-  window.setActiveTab(null);
-  refreshSidebar();
-  levelsView.render();
-});
-
-mainContainer.addEventListener("avatar:updated", () => {
-  refreshSidebar();
-});
-
-const STREAK_MILESTONES = [7, 14, 21, 30, 60, 100];
-document.body.addEventListener("streak:updated", (e) => {
-  refreshSidebar();
-  const { streak, isNewRecord } = e.detail;
-  if (streak > 0 && STREAK_MILESTONES.includes(streak)) {
-    setTimeout(() => celebrate(), 300);
+  const logo = document.querySelector("#sidebar-logo");
+  if (logo) {
+    logo.addEventListener("click", () => {
+      window.setActiveTab(null);
+      levelsView.render();
+    });
   }
-});
 
-document.body.addEventListener("level:up", (e) => {
-  const { level, title } = e.detail;
-  showLevelUp(level, title);
-  playLevelUp();
-});
+  const homeBtn = document.querySelector("#btn-levels-mobile");
+  if (homeBtn) {
+    homeBtn.addEventListener("click", () => {
+      window.setActiveTab(null);
+      levelsView.render();
+    });
+  }
 
-document.addEventListener("click", () => ensureAudioContext(), {
+  const logoutBtn = document.querySelector("#btn-logout");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      await sessionModel.logout();
+      window.location.href = import.meta.env.BASE_URL + "index.html";
+    });
+  }
+
+  document.getElementById("user-avatar")?.addEventListener("click", () => {
+    const src = document.getElementById("user-avatar").src;
+    showAvatarFullscreen(src);
+  });
+  document
+    .getElementById("user-avatar-mobile")
+    ?.addEventListener("click", () => {
+      const src = document.getElementById("user-avatar-mobile").src;
+      showAvatarFullscreen(src);
+    });
+
+  mainContainer.addEventListener("worksheet:cancel", () => {
+    window.setActiveTab(null);
+    refreshSidebar();
+    levelsView.render();
+  });
+
+  mainContainer.addEventListener("avatar:updated", () => {
+    refreshSidebar();
+  });
+
+  const STREAK_MILESTONES = [7, 14, 21, 30, 60, 100];
+  document.body.addEventListener("streak:updated", (e) => {
+    refreshSidebar();
+    const { streak, isNewRecord } = e.detail;
+    if (streak > 0 && STREAK_MILESTONES.includes(streak)) {
+      setTimeout(() => celebrate(), 300);
+    }
+  });
+
+  document.body.addEventListener("level:up", (e) => {
+    const { level, title } = e.detail;
+    showLevelUp(level, title);
+    playLevelUp();
+  });
+
+  document.addEventListener("click", () => ensureAudioContext(), {
     once: true,
   });
 })();

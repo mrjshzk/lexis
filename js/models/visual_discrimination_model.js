@@ -1,9 +1,15 @@
 import { shuffle } from "../utils.js";
 
 const CONFUSABLE_PAIRS = [
-  ["b", "d"], ["p", "q"], ["m", "w"],
-  ["n", "h"], ["u", "n"], ["a", "o"],
-  ["i", "l"], ["rn", "m"], ["cl", "d"],
+  ["b", "d"],
+  ["p", "q"],
+  ["m", "w"],
+  ["n", "h"],
+  ["u", "n"],
+  ["a", "o"],
+  ["i", "l"],
+  ["rn", "m"],
+  ["cl", "d"],
 ];
 
 function makeDistractor(word) {
@@ -27,7 +33,8 @@ function makeDistractor(word) {
         adjacentPairs.push([i, i + 1]);
       }
       if (adjacentPairs.length === 0) return null;
-      const [a, b] = adjacentPairs[Math.floor(Math.random() * adjacentPairs.length)];
+      const [a, b] =
+        adjacentPairs[Math.floor(Math.random() * adjacentPairs.length)];
       const chars = w.split("");
       [chars[a], chars[b]] = [chars[b], chars[a]];
       return chars.join("");
@@ -47,7 +54,12 @@ function makeDistractor(word) {
   shuffle(strategies);
   for (const fn of strategies) {
     const result = fn(word);
-    if (result && result !== word && result.length >= 2 && result.length <= word.length + 1) {
+    if (
+      result &&
+      result !== word &&
+      result.length >= 2 &&
+      result.length <= word.length + 1
+    ) {
       return result;
     }
   }
