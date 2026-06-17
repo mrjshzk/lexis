@@ -5,8 +5,7 @@
 - Install dependencies with ```npm install```
 - Run development server by running ```npm run dev```
 - Edit the files located in ```js/```, ```css/```, and ```html/```
-- Add new dependencies by running ```npm install <package>```
-
+- Add new dependencies by running ```npm install <packagelexis123
 ## Building Instructions
 - Run ```npm run build```
 - The final project should be inside the ```dist/``` folder
@@ -18,3 +17,8 @@
 - pdfjs-dist for PDF parsing
 - Dicebear for avatar generation
 - canvas-confetti for confetti animations
+- JSON-Server for mock backend
+
+## Admin credentials for testing
+Username: admin
+Password: lexis123
