@@ -151,6 +151,10 @@ body {
 	cursor: pointer;
 }
 
+.Home-logo-img {
+	height: 30px;
+}
+
 .lexis-mobile-nav-btn {
 	font-size: 1.2rem;
 	background: none;
