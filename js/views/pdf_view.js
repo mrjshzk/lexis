@@ -23,6 +23,7 @@ export class PdfView {
             <div class="lexis-pdf-content">${pdf.text}</div>
           </div>
         </div>`;
+
       mc.querySelector("#clear-pdf").addEventListener("click", async () => {
         await this.pdfModel.clearPdf();
         this._renderContent();

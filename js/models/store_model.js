@@ -6,30 +6,75 @@ const CATALOG = {
     { id: "eyes_confused", name: "Confused", value: "confused", price: 10 },
     { id: "eyes_sad", name: "Sad", value: "sad", price: 15 },
     { id: "eyes_sleepy", name: "Sleepy", value: "sleepy", price: 15 },
-    { id: "eyes_starstruck", name: "Starstruck", value: "starstruck", price: 20 },
+    {
+      id: "eyes_starstruck",
+      name: "Starstruck",
+      value: "starstruck",
+      price: 20,
+    },
     { id: "eyes_winking", name: "Winking", value: "winking", price: 20 },
   ],
   mouth: [
-    { id: "mouth_awkwardSmile", name: "Awkward Smile", value: "awkwardSmile", price: 0 },
+    {
+      id: "mouth_awkwardSmile",
+      name: "Awkward Smile",
+      value: "awkwardSmile",
+      price: 0,
+    },
     { id: "mouth_braces", name: "Braces", value: "braces", price: 0 },
     { id: "mouth_gapSmile", name: "Gap Smile", value: "gapSmile", price: 10 },
     { id: "mouth_kawaii", name: "Kawaii", value: "kawaii", price: 20 },
-    { id: "mouth_openedSmile", name: "Opened Smile", value: "openedSmile", price: 10 },
+    {
+      id: "mouth_openedSmile",
+      name: "Opened Smile",
+      value: "openedSmile",
+      price: 10,
+    },
     { id: "mouth_openSad", name: "Open Sad", value: "openSad", price: 10 },
-    { id: "mouth_teethSmile", name: "Teeth Smile", value: "teethSmile", price: 15 },
-    { id: "mouth_unimpressed", name: "Unimpressed", value: "unimpressed", price: 15 },
+    {
+      id: "mouth_teethSmile",
+      name: "Teeth Smile",
+      value: "teethSmile",
+      price: 15,
+    },
+    {
+      id: "mouth_unimpressed",
+      name: "Unimpressed",
+      value: "unimpressed",
+      price: 15,
+    },
   ],
   hair: [
-    { id: "hair_straightHair", name: "Straight", value: "straightHair", price: 0 },
+    {
+      id: "hair_straightHair",
+      name: "Straight",
+      value: "straightHair",
+      price: 0,
+    },
     { id: "hair_shortHair", name: "Short", value: "shortHair", price: 0 },
     { id: "hair_bangs", name: "Bangs", value: "bangs", price: 10 },
-    { id: "hair_bowlCutHair", name: "Bowl Cut", value: "bowlCutHair", price: 15 },
+    {
+      id: "hair_bowlCutHair",
+      name: "Bowl Cut",
+      value: "bowlCutHair",
+      price: 15,
+    },
     { id: "hair_braids", name: "Braids", value: "braids", price: 20 },
     { id: "hair_bunHair", name: "Bun", value: "bunHair", price: 15 },
     { id: "hair_curlyBob", name: "Curly Bob", value: "curlyBob", price: 15 },
-    { id: "hair_curlyShortHair", name: "Curly Short", value: "curlyShortHair", price: 10 },
+    {
+      id: "hair_curlyShortHair",
+      name: "Curly Short",
+      value: "curlyShortHair",
+      price: 10,
+    },
     { id: "hair_froBun", name: "Fro Bun", value: "froBun", price: 25 },
-    { id: "hair_halfShavedHead", name: "Half Shaved", value: "halfShavedHead", price: 25 },
+    {
+      id: "hair_halfShavedHead",
+      name: "Half Shaved",
+      value: "halfShavedHead",
+      price: 25,
+    },
     { id: "hair_mohawk", name: "Mohawk", value: "mohawk", price: 25 },
     { id: "hair_shavedHead", name: "Shaved", value: "shavedHead", price: 10 },
     { id: "hair_wavyBob", name: "Wavy Bob", value: "wavyBob", price: 15 },
@@ -57,16 +102,31 @@ const CATALOG = {
   accessories: [
     { id: "acc_none", name: "None", value: "none", price: 0 },
     { id: "acc_glasses", name: "Glasses", value: "glasses", price: 15 },
-    { id: "acc_sunglasses", name: "Sunglasses", value: "sunglasses", price: 15 },
+    {
+      id: "acc_sunglasses",
+      name: "Sunglasses",
+      value: "sunglasses",
+      price: 15,
+    },
     { id: "acc_catEars", name: "Cat Ears", value: "catEars", price: 20 },
     { id: "acc_clownNose", name: "Clown Nose", value: "clownNose", price: 10 },
     { id: "acc_mustache", name: "Mustache", value: "mustache", price: 20 },
-    { id: "acc_sailormoonCrown", name: "Sailor Crown", value: "sailormoonCrown", price: 25 },
+    {
+      id: "acc_sailormoonCrown",
+      name: "Sailor Crown",
+      value: "sailormoonCrown",
+      price: 25,
+    },
     { id: "acc_faceMask", name: "Face Mask", value: "faceMask", price: 10 },
     { id: "acc_sleepMask", name: "Sleep Mask", value: "sleepMask", price: 15 },
   ],
   backgroundColor: [
-    { id: "bg_transparent", name: "Transparent", value: "transparent", price: 0 },
+    {
+      id: "bg_transparent",
+      name: "Transparent",
+      value: "transparent",
+      price: 0,
+    },
     { id: "bg_lightBlue", name: "Light Blue", value: "c0aede", price: 0 },
     { id: "bg_pink", name: "Pink", value: "ffdfbf", price: 5 },
     { id: "bg_green", name: "Green", value: "c0ebdf", price: 5 },
@@ -132,12 +192,16 @@ export class StoreModel {
   }
 
   getItemById(itemId) {
-    return Object.values(CATALOG).flat().find(i => i.id === itemId) ?? null;
+    return (
+      Object.values(CATALOG)
+        .flat()
+        .find((i) => i.id === itemId) ?? null
+    );
   }
 
   getItemCategory(itemId) {
     const entry = Object.entries(CATALOG).find(([_, items]) =>
-      items.some(i => i.id === itemId)
+      items.some((i) => i.id === itemId),
     );
     return entry ? entry[0] : null;
   }
@@ -146,12 +210,14 @@ export class StoreModel {
     const item = this.getItemById(itemId);
     if (!item) return { ok: false, error: "Item not found." };
 
-    if (await this.isOwned(itemId)) return { ok: false, error: "Already owned." };
+    if (await this.isOwned(itemId))
+      return { ok: false, error: "Already owned." };
 
     const user = await this.getUser();
     if (!user) return { ok: false, error: "No active session." };
 
-    if (user.coins < item.price) return { ok: false, error: "Not enough coins." };
+    if (user.coins < item.price)
+      return { ok: false, error: "Not enough coins." };
 
     user.coins -= item.price;
     if (!user.purchasedStoreItems) user.purchasedStoreItems = [];
