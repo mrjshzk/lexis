@@ -1,15 +1,9 @@
 import SpellingModel from "./models/spelling_model.js";
 import LetterDndModel from "./models/letter_dnd_model.js";
 import MissingLettersModel from "./models/missing_letters_model.js";
-import WordOrderModel from "./models/word_order_model.js";
-import LetterReversalModel from "./models/letter_reversal_model.js";
-import VisualDiscriminationModel from "./models/visual_discrimination_model.js";
 import SpellingView from "./views/spelling_view.js";
 import LetterDndView from "./views/letter_dnd_view.js";
 import MissingLettersView from "./views/missing_letters_view.js";
-import WordOrderView from "./views/word_order_view.js";
-import LetterReversalView from "./views/letter_reversal_view.js";
-import VisualDiscriminationView from "./views/visual_discrimination_view.js";
 
 const TABS = [
   {
@@ -29,27 +23,6 @@ const TABS = [
     Model: MissingLettersModel,
     View: MissingLettersView,
     data: { word: "banana", hint: "A long yellow fruit" },
-  },
-  {
-    label: "Word Order",
-    Model: WordOrderModel,
-    View: WordOrderView,
-    data: {
-      sentence: "the cat sat",
-      hint: "A simple sentence with three words",
-    },
-  },
-  {
-    label: "Reversal",
-    Model: LetterReversalModel,
-    View: LetterReversalView,
-    data: { word: "dog", hint: "Man's best friend" },
-  },
-  {
-    label: "Visual",
-    Model: VisualDiscriminationModel,
-    View: VisualDiscriminationView,
-    data: { word: "quiet", hint: "Making little or no noise" },
   },
 ];
 
