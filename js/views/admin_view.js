@@ -9,7 +9,7 @@ export class AdminView {
   async render() {
     if (window.setActiveTab) window.setActiveTab("admin");
     const allUsers = await this.sessionModel.getAllUsers();
-    const users = allUsers.filter((u) => !u.isAnonymous);
+    const users = allUsers.filter((u) => !u.isAnonymous && !u.isAdmin);
     const mc = document.querySelector("#main-container");
 
     mc.innerHTML = `
