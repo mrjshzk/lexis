@@ -30,27 +30,6 @@ const TABS = [
     View: MissingLettersView,
     data: { word: "banana", hint: "A long yellow fruit" },
   },
-  {
-    label: "Word Order",
-    Model: WordOrderModel,
-    View: WordOrderView,
-    data: {
-      sentence: "the cat sat",
-      hint: "A simple sentence with three words",
-    },
-  },
-  {
-    label: "Reversal",
-    Model: LetterReversalModel,
-    View: LetterReversalView,
-    data: { word: "dog", hint: "Man's best friend" },
-  },
-  {
-    label: "Visual",
-    Model: VisualDiscriminationModel,
-    View: VisualDiscriminationView,
-    data: { word: "quiet", hint: "Making little or no noise" },
-  },
 ];
 
 let activeIndex = 0;
