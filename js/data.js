@@ -53,62 +53,10 @@ export const WORDS = [
 export const SENTENCES = [
   {
     sentence: "the quick brown fox jumps",
-    hint: "Contains every letter of the alphabet",
+    hint: "Something a fox does",
   },
   { sentence: "she sells sea shells", hint: "A famous tongue twister" },
-  {
-    sentence: "hello world program",
-    hint: "Every programmer writes this first",
-  },
   { sentence: "learning is fun", hint: "An encouraging phrase" },
   { sentence: "practice makes perfect", hint: "A saying about hard work" },
   { sentence: "a cat sat on the mat", hint: "A simple rhyming sentence" },
-  {
-    sentence: "peter piper picked a peck of pickled peppers",
-    hint: "A tongue twister with many P sounds",
-  },
-  {
-    sentence: "how much wood would a woodchuck chuck",
-    hint: "A famous tongue twister about a woodchuck",
-  },
-  {
-    sentence: "big black bugs bleed blue black blood",
-    hint: "Hard to say fast, many B sounds",
-  },
-  {
-    sentence: "i saw a saw that could out saw any saw",
-    hint: "Same word used as different meanings",
-  },
-  {
-    sentence: "the dog dug a deep damp hole",
-    hint: "Many D sounds, watch b and d",
-  },
-  {
-    sentence: "please place the plates on the plain plane",
-    hint: "Words that sound the same but differ",
-  },
-  {
-    sentence: "i thought through the tough though thoroughly",
-    hint: "Words ending in ough sound different",
-  },
-  {
-    sentence: "my mother made me mash my mangoes",
-    hint: "Many M sounds all together",
-  },
-  {
-    sentence: "the queen quietly questioned the quick quark",
-    hint: "Lots of Q words to practice",
-  },
-  {
-    sentence: "billy bought bright blue balloons for his birthday",
-    hint: "All starts with B, watch the D at the end",
-  },
-  {
-    sentence: "their friends were over there having fun",
-    hint: "Commonly confused words their and there",
-  },
-  {
-    sentence: "the night knight knew the knife was not his",
-    hint: "Silent K words in a sentence",
-  },
 ];
