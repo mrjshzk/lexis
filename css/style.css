@@ -774,7 +774,6 @@ body {
 .hero-text {
 	flex: 0 0 50%;
 	padding-right: 2rem;
-	animation: hero-text-reveal 0.5s ease-out 0.6s forwards;
 }
 
 .hero-image {
@@ -788,15 +787,6 @@ body {
 	max-width: 100%;
 }
 
-@keyframes hero-text-reveal {
-	0%   { opacity: 0; }
-	100% { opacity: 1; }
-}
-
-@keyframes hero-image-slide {
-	0%   { transform: translateX(-50%); }
-	100% { transform: translateX(0); }
-}
 
 @media (max-width: 767.98px) {
 	.lexis-landing-hero {
